@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindIt — Welcome Back</title>
+    
+    <!-- Relative Path Fix for Subfolder -->
+    <link rel="icon" type="image/jpeg" href="../images/findit.jpeg">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-purple: #5b46f6;
+            --primary-hover: #4a35e0;
+            --bg-body: #f8fafc;
+            --bg-nav: #ffffff;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --footer-bg: #090d16;
+            --footer-text: #94a3b8;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #0f172a;
+            --bg-nav: #1e293b;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 8%;
+            background-color: var(--bg-nav);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-purple);
+        }
+
+        .brand-logo-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #eef2ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .brand-logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .brand-logo-container i {
+            font-size: 1.3rem;
+            color: var(--primary-purple);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--border-color);
+            color: var(--primary-purple);
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary-purple);
+            background-color: rgba(91, 70, 246, 0.08);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-purple);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-block {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1.5rem;
+            background: radial-gradient(circle at 50% 20%, rgba(91, 70, 246, 0.05) 0%, transparent 70%);
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 450px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.05);
+        }
+
+        .auth-header { 
+            text-align: center; 
+            margin-bottom: 1.5rem; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-logo-wrapper {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            background: #eef2ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .header-logo-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .header-logo-wrapper i {
+            font-size: 1.8rem;
+            color: var(--primary-purple);
+        }
+
+        .auth-header h2 { 
+            font-size: 1.65rem; 
+            font-weight: 800; 
+            color: var(--text-main); 
+        }
+
+        .auth-header p { 
+            color: var(--text-muted); 
+            font-size: 0.9rem; 
+            margin-top: 4px;
+        }
+
+        .auth-message {
+            display: none; 
+            padding: 0.75rem 1rem; 
+            border-radius: 10px;
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            margin-bottom: 1.25rem; 
+            text-align: center;
+        }
+
+        .auth-message.error { 
+            display: block; 
+            background-color: #fef2f2; 
+            color: #ef4444; 
+            border: 1px solid #fca5a5; 
+        }
+
+        .auth-message.success { 
+            display: block; 
+            background-color: #f0fdf4; 
+            color: #16a34a; 
+            border: 1px solid #86efac; 
+        }
+
+        .form-group { 
+            margin-bottom: 1.25rem; 
+        }
+
+        .form-group label { 
+            display: block; 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            color: var(--text-main); 
+            margin-bottom: 0.5rem; 
+        }
+
+        .input-wrapper { 
+            position: relative; 
+        }
+
+        .input-wrapper i.fa-envelope, 
+        .input-wrapper i.fa-lock {
+            position: absolute; 
+            left: 1rem; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            color: var(--text-muted); 
+        }
+
+        .input-wrapper input {
+            width: 100%; 
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border: 1.5px solid var(--border-color); 
+            border-radius: 10px; 
+            font-size: 0.95rem; 
+            outline: none; 
+            background: var(--bg-card);
+            color: var(--text-main);
+        }
+
+        .input-wrapper input:focus { 
+            border-color: var(--primary-purple); 
+            box-shadow: 0 0 0 4px rgba(91, 70, 246, 0.1); 
+        }
+
+        .input-wrapper .toggle-password {
+            position: absolute; 
+            right: 1rem; 
+            left: auto; 
+            top: 50%; 
+            transform: translateY(-50%);
+            cursor: pointer; 
+            color: var(--text-muted); 
+        }
+
+        .input-wrapper .toggle-password:hover { 
+            color: var(--primary-purple); 
+        }
+
+        .auth-footer-text { 
+            text-align: center; 
+            margin-top: 1.5rem; 
+            font-size: 0.875rem; 
+            color: var(--text-muted); 
+            border-top: 1px solid var(--border-color); 
+            padding-top: 1.25rem; 
+        }
+
+        .auth-footer-text a { 
+            color: var(--primary-purple); 
+            font-weight: 700; 
+            text-decoration: none;
+        }
+
+        .site-footer {
+            background-color: var(--footer-bg);
+            color: #ffffff;
+            padding: 20px 8%;
+            margin-top: auto;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--footer-text);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar">
+        <a href="../index.html" class="navbar-brand">
+            <div class="brand-logo-container">
+                <img src="../images/findit.jpeg" alt="FindIt Logo" onerror="this.remove(); document.getElementById('navFallbackIcon').style.display='block';">
+                <i class="fa-solid fa-magnifying-glass-location" id="navFallbackIcon" style="display: none;"></i>
+            </div>
+            <span>FindIt</span>
+        </a>
+        <div class="nav-actions">
+            <a href="Login.html" class="btn btn-outline">Log In</a>
+            <a href="Register.html" class="btn btn-primary">Sign Up</a>
+        </div>
+    </header>
+
+    <!-- Main Login Container -->
+    <main class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="header-logo-wrapper">
+                    <img src="../images/findit.jpeg" alt="FindIt Logo" onerror="this.remove(); document.getElementById('headerFallbackIcon').style.display='block';">
+                    <i class="fa-solid fa-right-to-bracket" id="headerFallbackIcon" style="display: none;"></i>
+                </div>
+                <h2>Welcome Back</h2>
+                <p>Log in to access your FindIt account</p>
+            </div>
+
+            <div id="authMessage" class="auth-message"></div>
+
+            <form id="loginForm" onsubmit="handleLoginProcess(event)">
+                <div class="form-group">
+                    <label for="email">Campus Email</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="email" placeholder="vignesh@gmail.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="password" placeholder="Enter your password" required style="padding-right: 2.75rem;">
+                        <i class="fa-solid fa-eye toggle-password" id="toggleLoginPass" onclick="togglePasswordVisibility()"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">
+                    Log In <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </button>
+            </form>
+
+            <div class="auth-footer-text">
+                Don't have an account? <a href="Register.html">Sign Up Now</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-bottom">
+            <p>&copy; 2026 FindIt Campus System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Script Section -->
+    <script>
+    const savedTheme = localStorage.getItem('findit_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    function togglePasswordVisibility() {
+        const passInput = document.getElementById('password');
+        const toggleIcon = document.getElementById('toggleLoginPass');
+        
+        if (passInput.type === 'password') {
+            passInput.type = 'text';
+            toggleIcon.className = 'fa-solid fa-eye-slash toggle-password';
+        } else {
+            passInput.type = 'password';
+            toggleIcon.className = 'fa-solid fa-eye toggle-password';
+        }
+    }
+
+    function handleLoginProcess(e) {
+        e.preventDefault();
+
+        const emailInput = document.getElementById('email').value.trim().toLowerCase();
+        const passInput = document.getElementById('password').value;
+        const authMsg = document.getElementById('authMessage');
+
+        // 1. DIRECT HARDCODED ADMIN CHECK
+        if (emailInput === "admin@findit.com" && passInput === "admin123") {
+            const adminData = {
+                fullname: "System Admin",
+                role: "Admin",
+                dept: "Administration",
+                email: emailInput
+            };
+
+            localStorage.setItem('findit_logged_user', JSON.stringify(adminData));
+
+            authMsg.className = "auth-message success";
+            authMsg.textContent = "Admin Authenticated! Redirecting to Admin Panel...";
+            authMsg.style.display = "block";
+
+            setTimeout(() => {
+                window.location.href = "admin-dashboard.html";
+            }, 800);
+            return;
+        }
+
+        // 2. CHECK LOCAL STORAGE FOR REGISTERED USERS
+        const registeredUsers = JSON.parse(localStorage.getItem('findit_users')) || [];
+
+        const matchedUser = registeredUsers.find(
+            user => user.email.toLowerCase() === emailInput && user.password === passInput
+        );
+
+        if (matchedUser) {
+            localStorage.setItem('findit_logged_user', JSON.stringify({
+                fullname: matchedUser.fullname,
+                role: matchedUser.role || 'Student',
+                dept: matchedUser.dept || 'General',
+                email: matchedUser.email
+            }));
+
+            authMsg.className = "auth-message success";
+            authMsg.textContent = `Welcome back, ${matchedUser.fullname}! Redirecting...`;
+            authMsg.style.display = "block";
+
+            // If user registered as Admin, redirect to Dashboard, else Home Page
+            const isAdminRole = matchedUser.role && matchedUser.role.toLowerCase() === 'admin';
+
+            setTimeout(() => {
+                if (isAdminRole) {
+                    window.location.href = "Admin-Dashboard.html";
+                } else {
+                    window.location.href = "../index.html";
+                }
+            }, 1000);
+        } else {
+            const emailExists = registeredUsers.some(user => user.email.toLowerCase() === emailInput);
+            
+            authMsg.className = "auth-message error";
+            if (emailExists) {
+                authMsg.textContent = "Incorrect password! Please try again.";
+            } else {
+                authMsg.textContent = "No account found with this email! Please register first.";
+            }
+            authMsg.style.display = "block";
+        }
+    }
+    </script>
+</body>
+</html>

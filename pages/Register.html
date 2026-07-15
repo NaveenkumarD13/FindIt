@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindIt — Create Account</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="images/findit.jpeg">
+        <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-purple: #5b46f6;
+            --primary-hover: #4a35e0;
+            --bg-body: #f8fafc;
+            --bg-nav: #ffffff;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --footer-bg: #090d16;
+            --footer-text: #94a3b8;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #0f172a;
+            --bg-nav: #1e293b;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 8%;
+            background-color: var(--bg-nav);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-purple);
+        }
+
+        .brand-logo-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #eef2ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .brand-logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .brand-logo-container i {
+            font-size: 1.3rem;
+            color: var(--primary-purple);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--border-color);
+            color: var(--primary-purple);
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary-purple);
+            background-color: rgba(91, 70, 246, 0.08);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-purple);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-block {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1.5rem;
+            background: radial-gradient(circle at 50% 20%, rgba(91, 70, 246, 0.05) 0%, transparent 70%);
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 520px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.05);
+        }
+
+        .auth-header { 
+            text-align: center; 
+            margin-bottom: 1.5rem; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-logo-wrapper {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            background: #eef2ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .header-logo-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .header-logo-wrapper i {
+            font-size: 1.8rem;
+            color: var(--primary-purple);
+        }
+
+        .auth-header h2 { 
+            font-size: 1.65rem; 
+            font-weight: 800; 
+            color: var(--text-main); 
+        }
+
+        .auth-header p { 
+            color: var(--text-muted); 
+            font-size: 0.9rem; 
+            margin-top: 4px;
+        }
+
+        .auth-message {
+            display: none; 
+            padding: 0.75rem 1rem; 
+            border-radius: 10px;
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            margin-bottom: 1.25rem; 
+            text-align: center;
+        }
+
+        .auth-message.error { 
+            display: block; 
+            background-color: #fef2f2; 
+            color: #ef4444; 
+            border: 1px solid #fca5a5; 
+        }
+
+        .auth-message.success { 
+            display: block; 
+            background-color: #f0fdf4; 
+            color: #16a34a; 
+            border: 1px solid #86efac; 
+        }
+
+        .form-row { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 1rem; 
+        }
+
+        .form-group { 
+            margin-bottom: 1.25rem; 
+        }
+
+        .form-group label { 
+            display: block; 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            color: var(--text-main); 
+            margin-bottom: 0.5rem; 
+        }
+
+        .input-wrapper { 
+            position: relative; 
+        }
+
+        .input-wrapper i.fa-user, 
+        .input-wrapper i.fa-graduation-cap, 
+        .input-wrapper i.fa-user-shield,
+        .input-wrapper i.fa-chalkboard-user,
+        .input-wrapper i.fa-building-columns, 
+        .input-wrapper i.fa-envelope, 
+        .input-wrapper i.fa-lock {
+            position: absolute; 
+            left: 1rem; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            color: var(--text-muted); 
+        }
+
+        .input-wrapper input, .input-wrapper select {
+            width: 100%; 
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border: 1.5px solid var(--border-color); 
+            border-radius: 10px; 
+            font-size: 0.95rem; 
+            outline: none; 
+            background: var(--bg-card);
+            color: var(--text-main);
+        }
+
+        .input-wrapper input:focus, .input-wrapper select:focus { 
+            border-color: var(--primary-purple); 
+            box-shadow: 0 0 0 4px rgba(91, 70, 246, 0.1); 
+        }
+
+        .input-wrapper .toggle-password {
+            position: absolute; 
+            right: 1rem; 
+            left: auto; 
+            top: 50%; 
+            transform: translateY(-50%);
+            cursor: pointer; 
+            color: var(--text-muted); 
+        }
+
+        .input-wrapper .toggle-password:hover { 
+            color: var(--primary-purple); 
+        }
+
+        /* Validation Rule Box */
+        .rule-box {
+            background: var(--bg-body); 
+            border: 1px solid var(--border-color); 
+            border-radius: 10px;
+            padding: 0.85rem 1rem; 
+            margin-bottom: 1.25rem; 
+            font-size: 0.825rem;
+        }
+
+        .rule-box-title { 
+            font-weight: 700; 
+            color: var(--text-main); 
+            margin-bottom: 0.5rem; 
+        }
+
+        .rule-item {
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            color: var(--text-muted); 
+            margin-bottom: 0.35rem; 
+            transition: all 0.2s ease;
+        }
+
+        .rule-item:last-child { margin-bottom: 0; }
+
+        .rule-item.valid-rule { 
+            color: #16a34a; 
+            font-weight: 600; 
+        }
+
+        .auth-footer-text { 
+            text-align: center; 
+            margin-top: 1.5rem; 
+            font-size: 0.875rem; 
+            color: var(--text-muted); 
+            border-top: 1px solid var(--border-color); 
+            padding-top: 1.25rem; 
+        }
+
+        .auth-footer-text a { 
+            color: var(--primary-purple); 
+            font-weight: 700; 
+            text-decoration: none;
+        }
+
+        /* Footer */
+        .site-footer {
+            background-color: var(--footer-bg);
+            color: #ffffff;
+            padding: 20px 8%;
+            margin-top: auto;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--footer-text);
+        }
+
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <div class="brand-logo-container">
+                <img src="images/findit.jpeg" alt="FindIt Logo" onerror="this.remove(); document.getElementById('navFallbackIcon').style.display='block';">
+                <i class="fa-solid fa-magnifying-glass-location" id="navFallbackIcon" style="display: none;"></i>
+            </div>
+            <span>FindIt</span>
+        </a>
+        <div class="nav-actions">
+            <a href="pages/Login.html" class="btn btn-outline">Log In</a>
+            <a href="pages/Register.html" class="btn btn-primary">Sign Up</a>
+        </div>
+    </header>
+
+    <!-- Main Register Container -->
+    <main class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="header-logo-wrapper">
+                    <img src="images/findit.jpeg" alt="FindIt Logo" onerror="this.remove(); document.getElementById('headerFallbackIcon').style.display='block';">
+                    <i class="fa-solid fa-shield-halved" id="headerFallbackIcon" style="display: none;"></i>
+                </div>
+                <h2>Get Started with FindIt</h2>
+                <p>Create account with live validation & role assignment</p>
+            </div>
+
+            <div id="authMessage" class="auth-message"></div>
+
+            <form id="registerForm" onsubmit="handleRegisterProcess(event)">
+                <div class="form-group">
+                    <label for="fullname">Full Name</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="fullname"  required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="role">User Role</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-graduation-cap" id="roleIcon"></i>
+                            <select id="role" onchange="updateRoleUI()" required>
+                                <option value="Student" selected>Student</option>
+                                <option value="Faculty">Faculty / Staff</option>
+                                <option value="Admin">Campus Admin</option>
+                                <option value="Security">Security Chief</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="dept">Department / Office</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-building-columns"></i>
+                            <input type="text" id="dept" placeholder="CSE / Admin" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Campus Email (@gmail.com required)</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="email"  required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Create Password</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="password" required style="padding-right: 2.75rem;">
+                        <i class="fa-solid fa-eye toggle-password" id="toggleRegPass" onclick="togglePasswordVisibility()"></i>
+                    </div>
+                </div>
+
+                <!-- Live Validation Rules Box -->
+                <div class="rule-box" id="register-rules-container">
+                    <div class="rule-box-title"><i class="fa-solid fa-list-check"></i> Validation Rules:</div>
+                    <div class="rule-item" id="reg-name-min">
+                        <i class="fa-regular fa-circle-xmark"></i> Name must be at least 3 characters
+                    </div>
+                    <div class="rule-item" id="reg-email-gmail">
+                        <i class="fa-regular fa-circle-xmark"></i> Valid email ending with @gmail.com
+                    </div>
+                    <div class="rule-item" id="reg-pass-len">
+                        <i class="fa-regular fa-circle-xmark"></i> Password length between 6 to 20 characters
+                    </div>
+                    <div class="rule-item" id="reg-pass-upper">
+                        <i class="fa-regular fa-circle-xmark"></i> Password must have at least 1 uppercase letter
+                    </div>
+                    <div class="rule-item" id="reg-pass-special">
+                        <i class="fa-regular fa-circle-xmark"></i> Password must have at least 1 special character
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">
+                    Create Account <i class="fa-solid fa-user-plus"></i>
+                </button>
+            </form>
+
+            <div class="auth-footer-text">
+            
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-bottom">
+            <p>&copy; 2026 FindIt Campus System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Script Section -->
+    <script>
+    // Theme setup from storage
+    const savedTheme = localStorage.getItem('findit_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    // Toggle Password Visibility
+    function togglePasswordVisibility() {
+        const passInput = document.getElementById('password');
+        const toggleIcon = document.getElementById('toggleRegPass');
+        
+        if (passInput.type === 'password') {
+            passInput.type = 'text';
+            toggleIcon.className = 'fa-solid fa-eye-slash toggle-password';
+        } else {
+            passInput.type = 'password';
+            toggleIcon.className = 'fa-solid fa-eye toggle-password';
+        }
+    }
+
+    // Dynamic Role Icon
+    function updateRoleUI() {
+        const role = document.getElementById('role').value;
+        const roleIcon = document.getElementById('roleIcon');
+
+        if (role === 'Admin' || role === 'Security') {
+            roleIcon.className = 'fa-solid fa-user-shield';
+            roleIcon.style.color = '#5b46f6';
+        } else if (role === 'Faculty') {
+            roleIcon.className = 'fa-solid fa-chalkboard-user';
+            roleIcon.style.color = 'var(--text-muted)';
+        } else {
+            roleIcon.className = 'fa-solid fa-graduation-cap';
+            roleIcon.style.color = 'var(--text-muted)';
+        }
+    }
+
+    // Realtime Validation Handlers
+    const nameInput = document.getElementById('fullname');
+    const emailInput = document.getElementById('email');
+    const passInput = document.getElementById('password');
+
+    let isRulesValid = {
+        nameMin: false,
+        emailGmail: false,
+        passLen: false,
+        passUpper: false,
+        passSpecial: false
+    };
+
+    function setRuleState(elementId, isValid) {
+        const el = document.getElementById(elementId);
+        const icon = el.querySelector('i');
+        if (isValid) {
+            el.classList.add('valid-rule');
+            icon.className = 'fa-solid fa-circle-check';
+        } else {
+            el.classList.remove('valid-rule');
+            icon.className = 'fa-regular fa-circle-xmark';
+        }
+    }
+
+    // Name Validation
+    nameInput.addEventListener('input', () => {
+        const val = nameInput.value.trim();
+        isRulesValid.nameMin = val.length >= 3;
+        setRuleState('reg-name-min', isRulesValid.nameMin);
+    });
+
+    // Email Validation
+    emailInput.addEventListener('input', () => {
+        const val = emailInput.value.trim();
+        isRulesValid.emailGmail = val.toLowerCase().endsWith('@gmail.com');
+        setRuleState('reg-email-gmail', isRulesValid.emailGmail);
+    });
+
+    // Password Validation
+    passInput.addEventListener('input', () => {
+        const val = passInput.value;
+        isRulesValid.passLen = val.length >= 6 && val.length <= 20;
+        isRulesValid.passUpper = /[A-Z]/.test(val);
+        isRulesValid.passSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(val);
+
+        setRuleState('reg-pass-len', isRulesValid.passLen);
+        setRuleState('reg-pass-upper', isRulesValid.passUpper);
+        setRuleState('reg-pass-special', isRulesValid.passSpecial);
+    });
+
+    // Registration Handler -> Redirects strictly to login.html
+    function handleRegisterProcess(e) {
+        e.preventDefault();
+
+        const authMsg = document.getElementById('authMessage');
+        const allPassed = Object.values(isRulesValid).every(Boolean);
+
+        if (!allPassed) {
+            authMsg.className = "auth-message error";
+            authMsg.textContent = "Please fulfill all validation rules before creating account!";
+            authMsg.style.display = "block";
+            return;
+        }
+
+        const fullname = nameInput.value.trim();
+        const role = document.getElementById('role').value;
+        const dept = document.getElementById('dept').value.trim();
+        const email = emailInput.value.trim();
+        const password = passInput.value;
+
+        // Get registered users list from localStorage or initialize empty array
+        const registeredUsers = JSON.parse(localStorage.getItem('findit_users')) || [];
+
+        // Check if email already registered
+        const userExists = registeredUsers.some(u => u.email.toLowerCase() === email.toLowerCase());
+        if (userExists) {
+            authMsg.className = "auth-message error";
+            authMsg.textContent = "Account with this email already exists! Try logging in.";
+            authMsg.style.display = "block";
+            return;
+        }
+
+        // Save new user account to registered users store
+        const newUser = { fullname, role, dept, email, password };
+        registeredUsers.push(newUser);
+        localStorage.setItem('findit_users', JSON.stringify(registeredUsers));
+
+        authMsg.className = "auth-message success";
+        authMsg.textContent = "Account created successfully! Redirecting to Login Page...";
+        authMsg.style.display = "block";
+
+        // Redirect strictly to Login Page
+        setTimeout(() => {
+            window.location.href = "login.html";
+        }, 1200);
+    }
+    </script>
+</body>
+</html>

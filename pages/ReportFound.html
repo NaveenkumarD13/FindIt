@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindIt — Report Found Item</title>
+
+    <!-- Title Logo / Favicon -->
+    <link rel="icon" type="image/x-icon" href="../images/findit.jpeg">
+    <link rel="shortcut icon" type="image/jpeg" href="../images/findit.jpeg">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-purple: #5b46f6;
+            --primary-green: #10b981;
+            --primary-green-hover: #059669;
+            --bg-body: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #ecfdf5 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--text-main);
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 8%;
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary-purple);
+        }
+
+        .brand-logo-container {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #eef2ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .brand-logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            border-color: var(--primary-purple);
+            color: var(--primary-purple);
+            background-color: rgba(91, 70, 246, 0.05);
+        }
+
+        /* Form Layout */
+        .form-wrapper {
+            max-width: 680px;
+            margin: 2.5rem auto;
+            width: 90%;
+            flex: 1;
+        }
+
+        .form-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 2.5rem;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 20px 40px -15px rgba(16, 185, 129, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #10b981, #06b6d4);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-header .badge-pill {
+            background: #d1fae5;
+            color: #059669;
+            padding: 0.35rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .form-header h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.02em;
+        }
+
+        .form-header p {
+            color: #64748b;
+            font-size: 0.925rem;
+            margin-top: 0.35rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+
+        .full-width { grid-column: span 2; }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .input-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-box i {
+            position: absolute;
+            left: 1rem;
+            color: #94a3b8;
+            font-size: 1rem;
+            transition: color 0.2s;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border-radius: 12px;
+            border: 1.5px solid #e2e8f0;
+            outline: none;
+            font-size: 0.925rem;
+            color: #0f172a;
+            background: #f8fafc;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            background: #ffffff;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        }
+
+        .form-input:focus + i { color: var(--primary-green); }
+
+        textarea.form-input {
+            padding-left: 1rem;
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        /* Upload Container */
+        .upload-box {
+            border: 2px dashed #cbd5e1;
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .upload-box:hover {
+            border-color: var(--primary-green);
+            background: #f0fdf4;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            font-weight: 700;
+            padding: 0.85rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(16, 185, 129, 0.4);
+        }
+
+        @media (max-width: 640px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navbar -->
+    <header class="navbar">
+        <a href="../index.html" class="navbar-brand">
+            <div class="brand-logo-container">
+                <img src="../images/findit.jpeg" alt="FindIt Logo" onerror="this.remove()">
+            </div>
+            <span>FindIt</span>
+        </a>
+        <div class="nav-actions" id="navActions">
+            <a href="../index.html" class="btn"><i class="fa-solid fa-house"></i> Home</a>
+        </div>
+    </header>
+
+    <main class="form-wrapper">
+        <div class="form-card">
+            <div class="form-header">
+                <span class="badge-pill"><i class="fa-solid fa-circle-check"></i> Found Item Report</span>
+                <h2>Report a Found Item</h2>
+                <p>Help return a lost item to its rightful owner on campus</p>
+            </div>
+
+            <form id="foundReportForm" onsubmit="handleFoundFormSubmit(event)">
+                <div class="form-grid">
+                    
+                    <!-- Item Name -->
+                    <div class="form-group full-width">
+                        <label for="itemName"><i class="fa-solid fa-tag"></i> Item Found *</label>
+                        <div class="input-box">
+                            <input type="text" id="itemName" class="form-input" placeholder="e.g. HP Wireless Mouse / Black Boat Earbuds Case" required>
+                            <i class="fa-solid fa-box"></i>
+                        </div>
+                    </div>
+
+                    <!-- Category -->
+                    <div class="form-group">
+                        <label for="category"><i class="fa-solid fa-layer-group"></i> Category *</label>
+                        <div class="input-box">
+                            <select id="category" class="form-input" required style="padding-left: 2.75rem;">
+                                <option value="" disabled selected>Select Category</option>
+                                <option value="Electronics">Electronics & Gadgets</option>
+                                <option value="ID Card">ID & Official Cards</option>
+                                <option value="Keys">Keys & Chains</option>
+                                <option value="Study Material">Books & Calculators</option>
+                                <option value="Personal Belongings">Bags & Wallets</option>
+                                <option value="Others">Others</option>
+                            </select>
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                    </div>
+
+                    <!-- Found Location -->
+                    <div class="form-group">
+                        <label for="location"><i class="fa-solid fa-location-dot"></i> Found Location *</label>
+                        <div class="input-box">
+                            <input type="text" id="location" class="form-input" placeholder="e.g. Canteen Table #4 / CS Lab 3" required>
+                            <i class="fa-solid fa-compass"></i>
+                        </div>
+                    </div>
+
+                    <!-- Date & Time Found -->
+                    <div class="form-group">
+                        <label for="foundDate"><i class="fa-solid fa-calendar-day"></i> Approx. Date/Time</label>
+                        <div class="input-box">
+                            <input type="text" id="foundDate" class="form-input" placeholder="e.g. Today around 2:00 PM">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                    </div>
+
+                    <!-- Contact Info / Handover Location -->
+                    <div class="form-group">
+                        <label for="contactInfo"><i class="fa-solid fa-phone"></i> Your Contact / Handover Point *</label>
+                        <div class="input-box">
+                            <input type="text" id="contactInfo" class="form-input" placeholder="e.g. +91 9876543210 or Security Desk" required>
+                            <i class="fa-solid fa-mobile-screen"></i>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group full-width">
+                        <label for="description"><i class="fa-solid fa-align-left"></i> Description & Verification Clues</label>
+                        <textarea id="description" class="form-input" placeholder="Describe the item condition or mention what the owner needs to prove to claim it..."></textarea>
+                    </div>
+
+                    <!-- Reference Photo -->
+                    <div class="form-group full-width">
+                        <label><i class="fa-solid fa-image"></i> Item Photo (Optional)</label>
+                        <div class="upload-box" onclick="document.getElementById('itemImage').click()">
+                            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.8rem; color: #10b981; margin-bottom: 0.5rem;"></i>
+                            <p style="font-size: 0.875rem; font-weight: 600; color: #334155;">Click to upload item image</p>
+                            <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.2rem;" id="fileNameDisplay">PNG, JPG up to 5MB</p>
+                            <input type="file" id="itemImage" accept="image/*" style="display: none;" onchange="updateFileName(this)">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <button type="submit" class="btn-submit">
+                        <i class="fa-solid fa-circle-check"></i> Publish Found Item Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Script Block -->
+    <script>
+    // 🔒 AUTH GUARD: Throws user to Login page if not logged in
+    document.addEventListener('DOMContentLoaded', () => {
+        const loggedInUser = JSON.parse(localStorage.getItem('findit_logged_user'));
+        
+        if (!loggedInUser) {
+            alert('⚠️ Please log in first to report a found item!');
+            window.location.href = 'Login.html';
+        }
+    });
+
+    function updateFileName(input) {
+        const display = document.getElementById('fileNameDisplay');
+        if (input.files && input.files[0]) {
+            display.textContent = "Selected: " + input.files[0].name;
+            display.style.color = "#10b981";
+            display.style.fontWeight = "700";
+        }
+    }
+
+    function handleFoundFormSubmit(e) {
+        e.preventDefault();
+
+        const activeUser = JSON.parse(localStorage.getItem('findit_logged_user'));
+
+        if (!activeUser) {
+            alert('⚠️ Session expired! Please log in first.');
+            window.location.href = 'Login.html';
+            return;
+        }
+
+        const categoryIcons = {
+            'Electronics': 'fa-laptop',
+            'ID Card': 'fa-id-card',
+            'Keys': 'fa-key',
+            'Study Material': 'fa-calculator',
+            'Personal Belongings': 'fa-wallet',
+            'Others': 'fa-box'
+        };
+
+        const category = document.getElementById('category').value || 'Others';
+        const selectedIcon = categoryIcons[category] || 'fa-box';
+
+        const newReport = {
+            id: 'F-' + Date.now(),
+            itemName: document.getElementById('itemName').value,
+            type: 'Found',
+            category: category,
+            location: document.getElementById('location').value,
+            lostDate: document.getElementById('foundDate').value || 'Recently',
+            contact: document.getElementById('contactInfo').value,
+            description: document.getElementById('description').value || 'No extra description provided.',
+            userName: activeUser.fullname || 'Student',
+            dept: activeUser.dept || activeUser.role || 'General',
+            userEmail: activeUser.email,
+            status: 'PENDING',
+            icon: selectedIcon,
+            createdAt: Date.now()
+        };
+
+        // Save to LocalStorage
+        const existingReports = JSON.parse(localStorage.getItem('findit_all_reports')) || [];
+        existingReports.unshift(newReport);
+        localStorage.setItem('findit_all_reports', JSON.stringify(existingReports));
+
+        alert('🎉 Found Item Report Published Successfully!\nThank you for helping out!');
+        window.location.href = '../index.html';
+    }
+    </script>
+</body>
+</html>
