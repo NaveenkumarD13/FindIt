@@ -227,6 +227,56 @@
             min-height: 90px;
         }
 
+        /* Item Preview Box */
+        .item-preview-box {
+            border: 2px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .preview-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid #e2e8f0;
+            background: white;
+            display: none;
+        }
+
+        .preview-image.show {
+            display: block;
+        }
+
+        .preview-icon {
+            font-size: 3rem;
+            color: #ef4444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 120px;
+            height: 120px;
+            background: #fee2e2;
+            border-radius: 12px;
+        }
+
+        .preview-icon.hide {
+            display: none;
+        }
+
+        .preview-text {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
         /* Upload Container */
         .upload-box {
             border: 2px dashed #cbd5e1;
@@ -295,6 +345,15 @@
                 <p>Provide details to alert students across campus and speed up recovery</p>
             </div>
 
+            <!-- Item Preview Section -->
+            <div class="item-preview-box" id="previewBox">
+                <div class="preview-icon" id="previewIcon">
+                    <i class="fa-solid fa-box"></i>
+                </div>
+                <img id="previewImage" class="preview-image" alt="Item preview">
+                <div class="preview-text" id="previewText">Type item name to see preview</div>
+            </div>
+
             <form id="lostReportForm" onsubmit="handleLostFormSubmit(event)">
                 <div class="form-grid">
                     
@@ -302,7 +361,7 @@
                     <div class="form-group full-width">
                         <label for="itemName"><i class="fa-solid fa-tag"></i> Item Name *</label>
                         <div class="input-box">
-                            <input type="text" id="itemName" class="form-input" placeholder="e.g. Blue Dell Laptop / Black Leather Wallet" required>
+                            <input type="text" id="itemName" class="form-input" placeholder="e.g. Blue Dell Laptop / Black Leather Wallet" required onkeyup="updateItemPreview()">
                             <i class="fa-solid fa-box"></i>
                         </div>
                     </div>
@@ -311,7 +370,7 @@
                     <div class="form-group">
                         <label for="category"><i class="fa-solid fa-layer-group"></i> Category *</label>
                         <div class="input-box">
-                            <select id="category" class="form-input" required style="padding-left: 2.75rem;">
+                            <select id="category" class="form-input" required style="padding-left: 2.75rem;" onchange="updateItemPreview()">
                                 <option value="" disabled selected>Select Category</option>
                                 <option value="Electronics">Electronics & Gadgets</option>
                                 <option value="ID Card">ID & Official Cards</option>
@@ -391,6 +450,112 @@
         }
     });
 
+    // Enhanced icon mapping with multiple keywords
+    const itemKeywordMap = {
+        'Electronics': {
+            keywords: ['laptop', 'phone', 'mobile', 'iphone', 'samsung', 'computer', 'tablet', 'headphone', 'earbuds', 'camera', 'watch', 'mouse', 'keyboard', 'monitor', 'printer', 'speaker', 'charger', 'cable'],
+            icon: 'fa-laptop',
+            imageSearch: 'electronics gadget'
+        },
+        'ID Card': {
+            keywords: ['id', 'card', 'aadhar', 'passport', 'license', 'certificate', 'document', 'credentials'],
+            icon: 'fa-id-card',
+            imageSearch: 'id card'
+        },
+        'Keys': {
+            keywords: ['key', 'keys', 'keychain', 'chain', 'lock', 'door key'],
+            icon: 'fa-key',
+            imageSearch: 'keys keychain'
+        },
+        'Study Material': {
+            keywords: ['book', 'notebook', 'pen', 'pencil', 'calculator', 'notes', 'textbook', 'journal'],
+            icon: 'fa-calculator',
+            imageSearch: 'books calculator'
+        },
+        'Personal Belongings': {
+            keywords: ['wallet', 'bag', 'purse', 'backpack', 'jacket', 'shoe', 'shoes', 'belt', 'scarf', 'glasses', 'watch', 'jewelry', 'ring', 'bracelet'],
+            icon: 'fa-wallet',
+            imageSearch: 'wallet bag'
+        },
+        'Others': {
+            keywords: [],
+            icon: 'fa-box',
+            imageSearch: 'lost item'
+        }
+    };
+
+    function getItemImageURL(itemName, category) {
+        // Using Unsplash API for free images (no API key needed for basic usage)
+        const searchQuery = encodeURIComponent(itemName || (category === 'Electronics' ? 'laptop' : 'lost item'));
+        
+        // Build Unsplash search URL with random parameter to get different images
+        const randomId = Math.random().toString(36).substring(7);
+        const url = `https://source.unsplash.com/200x200/?${searchQuery},${randomId}`;
+        
+        return url;
+    }
+
+    function resolveIconAndImage(itemName) {
+        const name = itemName.toLowerCase();
+        let selectedCategory = 'Others';
+        let selectedIcon = 'fa-box';
+        let imageURL = '';
+
+        // Check which category matches the item name
+        for (const [category, data] of Object.entries(itemKeywordMap)) {
+            for (const keyword of data.keywords) {
+                if (name.includes(keyword)) {
+                    selectedCategory = category;
+                    selectedIcon = data.icon;
+                    break;
+                }
+            }
+        }
+
+        // Generate image URL from Unsplash
+        imageURL = getItemImageURL(itemName, selectedCategory);
+
+        return { selectedIcon, imageURL, selectedCategory };
+    }
+
+    function updateItemPreview() {
+        const itemName = document.getElementById('itemName').value.trim();
+        const category = document.getElementById('category').value;
+        const previewIcon = document.getElementById('previewIcon');
+        const previewImage = document.getElementById('previewImage');
+        const previewText = document.getElementById('previewText');
+
+        if (itemName.length === 0) {
+            previewIcon.classList.remove('hide');
+            previewImage.classList.remove('show');
+            previewText.textContent = 'Type item name to see preview';
+            previewIcon.innerHTML = '<i class="fa-solid fa-box"></i>';
+            return;
+        }
+
+        // Get icon and image based on item name
+        const { selectedIcon, imageURL, selectedCategory } = resolveIconAndImage(itemName);
+
+        // Update icon
+        previewIcon.innerHTML = `<i class="fa-solid ${selectedIcon}"></i>`;
+        previewIcon.classList.remove('hide');
+
+        // Load image
+        previewImage.onload = function() {
+            previewImage.classList.add('show');
+            previewIcon.classList.add('hide');
+        };
+
+        previewImage.onerror = function() {
+            // If image fails, just show icon
+            previewImage.classList.remove('show');
+            previewIcon.classList.remove('hide');
+        };
+
+        previewImage.src = imageURL;
+        previewText.textContent = `📦 ${itemName} (${selectedCategory})`;
+    }
+
     function updateFileName(input) {
         const display = document.getElementById('fileNameDisplay');
         if (input.files && input.files[0]) {
@@ -411,23 +576,14 @@
             return;
         }
 
-        const categoryIcons = {
-            'Electronics': 'fa-laptop',
-            'ID Card': 'fa-id-card',
-            'Keys': 'fa-key',
-            'Study Material': 'fa-calculator',
-            'Personal Belongings': 'fa-wallet',
-            'Others': 'fa-box'
-        };
-
-        const category = document.getElementById('category').value || 'Others';
-        const selectedIcon = categoryIcons[category] || 'fa-box';
+        const itemName = document.getElementById('itemName').value;
+        const { selectedIcon, imageURL } = resolveIconAndImage(itemName);
 
         const newReport = {
             id: 'R-' + Date.now(),
-            itemName: document.getElementById('itemName').value,
+            itemName: itemName,
             type: 'Lost',
-            category: category,
+            category: document.getElementById('category').value || 'Others',
             location: document.getElementById('location').value,
             lostDate: document.getElementById('lostDate').value || 'Recently',
             contact: document.getElementById('contactInfo').value,
@@ -437,6 +593,7 @@
             userEmail: activeUser.email,
             status: 'PENDING',
             icon: selectedIcon,
+            imageURL: imageURL, // NEW: Store image URL
             createdAt: Date.now()
         };
 
