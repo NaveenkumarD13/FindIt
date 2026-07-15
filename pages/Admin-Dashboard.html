@@ -415,23 +415,23 @@
 
             <div class="stat-card">
                 <div class="stat-info">
-                    <h3>Pending Review</h3>
-                    <p id="statPending">0</p>
+                    <h3>Lost Items</h3>
+                    <p id="statLost">0</p>
                 </div>
-                <div class="stat-icon" style="background: rgba(217, 119, 6, 0.1); color: #d97706;"><i class="fa-solid fa-hourglass-half"></i></div>
+                <div class="stat-icon" style="background: rgba(217, 119, 6, 0.1); color: #d97706;"><i class="fa-solid fa-magnifying-glass"></i></div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-info">
-                    <h3>Active Listings</h3>
-                    <p id="statActive">0</p>
+                    <h3>Found Items</h3>
+                    <p id="statFound">0</p>
                 </div>
-                <div class="stat-icon" style="background: rgba(37, 99, 235, 0.1); color: #2563eb;"><i class="fa-solid fa-bullhorn"></i></div>
+                <div class="stat-icon" style="background: rgba(37, 99, 235, 0.1); color: #2563eb;"><i class="fa-solid fa-box-open"></i></div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-info">
-                    <h3>Resolved</h3>
+                    <h3>Recovered</h3>
                     <p id="statResolved">0</p>
                 </div>
                 <div class="stat-icon" style="background: rgba(34, 197, 94, 0.1); color: #22c55e;"><i class="fa-solid fa-circle-check"></i></div>
@@ -454,9 +454,8 @@
 
                 <select class="filter-select" id="statusFilter" onchange="filterTable()">
                     <option value="ALL">All Statuses</option>
-                    <option value="pending">Pending</option>
                     <option value="active">Active</option>
-                    <option value="resolved">Resolved</option>
+                    <option value="resolved">Recovered</option>
                 </select>
             </div>
         </div>
@@ -514,25 +513,34 @@
             return JSON.parse(localStorage.getItem('findit_items')) || [];
         }
 
-        // Load & Calculate Real Stats
+        // Load & Calculate Real Stats - FIXED
         function loadAdminData() {
             const items = getReportedItems();
             
-            let pendingCount = 0;
-            let activeCount = 0;
-            let resolvedCount = 0;
+            let lostCount = 0;
+            let foundCount = 0;
+            let recoveredCount = 0;
 
             items.forEach(item => {
+                const type = (item.type || 'LOST').toUpperCase();
                 const status = (item.status || 'Active').toLowerCase();
-                if (status === 'pending') pendingCount++;
-                else if (status === 'resolved' || status === 'recovered') resolvedCount++;
-                else activeCount++;
+                
+                if (type === 'LOST') {
+                    lostCount++;
+                } else if (type === 'FOUND') {
+                    foundCount++;
+                }
+                
+                if (status === 'resolved' || status === 'recovered') {
+                    recoveredCount++;
+                }
             });
 
+            // Update stats display
             document.getElementById('statTotal').textContent = items.length;
-            document.getElementById('statPending').textContent = pendingCount;
-            document.getElementById('statActive').textContent = activeCount;
-            document.getElementById('statResolved').textContent = resolvedCount;
+            document.getElementById('statLost').textContent = lostCount;
+            document.getElementById('statFound').textContent = foundCount;
+            document.getElementById('statResolved').textContent = recoveredCount;
 
             renderTable(items);
         }
@@ -558,7 +566,6 @@
                 const status = item.status || 'Active';
                 
                 let statusBadgeClass = 'badge-status-active';
-                if (status.toLowerCase() === 'pending') statusBadgeClass = 'badge-status-pending';
                 if (status.toLowerCase() === 'resolved' || status.toLowerCase() === 'recovered') statusBadgeClass = 'badge-status-resolved';
 
                 return `
@@ -580,8 +587,8 @@
                         </td>
                         <td>
                             <div class="action-btns">
-                                ${status.toLowerCase() !== 'active' ? `<button onclick="updateStatus(${index}, 'Active')" class="btn btn-success" title="Approve / Mark Active"><i class="fa-solid fa-check"></i></button>` : ''}
-                                ${status.toLowerCase() !== 'resolved' ? `<button onclick="updateStatus(${index}, 'Resolved')" class="btn btn-outline" title="Mark Resolved"><i class="fa-solid fa-box-archive"></i></button>` : ''}
+                                ${status.toLowerCase() !== 'active' ? `<button onclick="updateStatus(${index}, 'Active')" class="btn btn-success" title="Mark as Active"><i class="fa-solid fa-check"></i></button>` : ''}
+                                ${status.toLowerCase() !== 'resolved' ? `<button onclick="updateStatus(${index}, 'Resolved')" class="btn btn-outline" title="Mark as Recovered"><i class="fa-solid fa-star"></i></button>` : ''}
                                 <button onclick="deleteItem(${index})" class="btn btn-danger" title="Delete Listing"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </td>
