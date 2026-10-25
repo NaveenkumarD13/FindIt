@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindIt — Create Account</title>
+
+    <link rel="icon" type="image/jpeg" href="../images/findit.jpeg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-glow: rgba(79, 70, 229, 0.35);
+            --accent: #06b6d4;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-body: #0f172a;
+            --glass-card: rgba(255, 255, 255, 0.10);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-soft: #64748b;
+            --input-bg: rgba(255, 255, 255, 0.06);
+            --input-border: rgba(255, 255, 255, 0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .animated-bg {
+            position: fixed; inset: 0; z-index: -2;
+            background: linear-gradient(-45deg, #0f172a, #1e1b4b, #0c4a6e, #134e4a);
+            background-size: 400% 400%;
+            animation: gradientShift 18s ease infinite;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .orb { position: fixed; border-radius: 50%; filter: blur(80px); z-index: -1; opacity: 0.5; animation: float 12s ease-in-out infinite; }
+        .orb-1 { width: 400px; height: 400px; background: #4f46e5; top: -100px; left: -100px; }
+        .orb-2 { width: 350px; height: 350px; background: #06b6d4; bottom: -80px; right: -80px; animation-delay: -4s; }
+        .orb-3 { width: 300px; height: 300px; background: #7c3aed; top: 40%; left: 50%; animation-delay: -8s; }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -40px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 6%;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .navbar-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; font-size: 1.35rem; font-weight: 800; color: #fff; }
+        .navbar-brand img { width: 38px; height: 38px; border-radius: 10px; object-fit: contain; background: #fff; padding: 2px; }
+        .nav-actions { display: flex; align-items: center; gap: 12px; }
+        .btn-nav {
+            padding: 9px 18px; border-radius: 10px; font-weight: 600; font-size: 0.88rem;
+            text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+            border: 1px solid var(--glass-border); background: transparent; color: #fff; transition: all 0.25s ease;
+        }
+        .btn-nav:hover { border-color: var(--primary); background: rgba(79,70,229,0.2); }
+        .btn-nav.primary { background: var(--primary); border-color: var(--primary); }
+        .btn-nav.primary:hover { background: var(--primary-hover); }
+
+        .auth-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 1.5rem; }
+        .auth-card {
+            width: 100%; max-width: 520px;
+            background: var(--glass-card);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px; padding: 2.5rem;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+            position: relative; overflow: hidden;
+        }
+        .auth-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+        .auth-header { text-align: center; margin-bottom: 1.75rem; }
+        .header-logo {
+            width: 60px; height: 60px; border-radius: 16px;
+            background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1rem; border: 1px solid var(--glass-border); overflow: hidden;
+        }
+        .header-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 16px; }
+        .auth-header h2 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; }
+        .auth-header p { color: var(--text-muted); font-size: 0.9rem; margin-top: 4px; }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-group { margin-bottom: 1.15rem; }
+        .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .input-wrapper { position: relative; }
+        .input-wrapper > i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-soft); font-size: 0.95rem; pointer-events: none; }
+        .input-wrapper input, .input-wrapper select {
+            width: 100%; padding: 0.8rem 1rem 0.8rem 2.75rem;
+            border: 1.5px solid var(--input-border); border-radius: 12px;
+            font-size: 0.92rem; outline: none;
+            background: var(--input-bg); color: var(--text-main);
+            transition: all 0.25s ease;
+        }
+        .input-wrapper input::placeholder { color: var(--text-soft); }
+        .input-wrapper input:focus, .input-wrapper select:focus {
+            border-color: var(--primary); background: rgba(79,70,229,0.08);
+            box-shadow: 0 0 0 4px rgba(79,70,229,0.15);
+        }
+        .input-wrapper select option { background: #1e293b; color: #fff; }
+        .toggle-password {
+            position: absolute; right: 14px; left: auto; top: 50%; transform: translateY(-50%);
+            cursor: pointer; color: var(--text-soft); font-size: 0.95rem; transition: color 0.2s;
+        }
+        .toggle-password:hover { color: var(--primary); }
+
+        .field-error { font-size: 0.74rem; color: var(--danger); margin-top: 4px; display: none; }
+        .field-error.show { display: block; }
+        .input-wrapper input.invalid, .input-wrapper select.invalid { border-color: var(--danger); }
+        .input-wrapper input.valid { border-color: var(--success); }
+
+        .strength-bar { display: flex; gap: 4px; margin-top: 8px; }
+        .strength-segment { flex: 1; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.1); transition: background 0.3s; }
+        .strength-segment.weak { background: var(--danger); }
+        .strength-segment.medium { background: var(--warning); }
+        .strength-segment.strong { background: var(--success); }
+        .strength-label { font-size: 0.72rem; margin-top: 4px; font-weight: 600; }
+
+        .auth-message { display: none; padding: 0.7rem 1rem; border-radius: 10px; font-size: 0.83rem; font-weight: 600; margin-bottom: 1.25rem; text-align: center; }
+        .auth-message.error { display: block; background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+        .auth-message.success { display: block; background: rgba(22,163,74,0.15); color: #86efac; border: 1px solid rgba(22,163,74,0.3); }
+        .auth-message.info { display: block; background: rgba(79,70,229,0.15); color: #c7d2fe; border: 1px solid rgba(79,70,229,0.3); }
+
+        .btn-submit {
+            width: 100%; padding: 0.85rem; border-radius: 12px; border: none;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: #fff; font-weight: 700; font-size: 0.95rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            box-shadow: 0 8px 20px var(--primary-glow); transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 28px var(--primary-glow); }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .auth-footer { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--glass-border); padding-top: 1.25rem; }
+        .auth-footer a { color: var(--accent); font-weight: 700; text-decoration: none; }
+        .auth-footer a:hover { text-decoration: underline; }
+
+        /* OTP Modal */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 300;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+            display: none; align-items: center; justify-content: center; padding: 1.5rem;
+        }
+        .modal-overlay.show { display: flex; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-card {
+            width: 100%; max-width: 440px;
+            background: var(--glass-card); backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border); border-radius: 24px;
+            padding: 2.5rem; box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+            position: relative; overflow: hidden;
+            animation: modalIn 0.4s cubic-bezier(0.16,1,0.3,1);
+        }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .modal-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--primary), var(--accent)); }
+        .modal-icon { width: 64px; height: 64px; border-radius: 18px; background: rgba(79,70,229,0.2); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; font-size: 1.8rem; color: var(--primary); }
+        .modal-title { text-align: center; font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem; }
+        .modal-sub { text-align: center; color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.5rem; }
+        .otp-input-group { display: flex; gap: 8px; justify-content: center; margin: 1rem 0 1.5rem; }
+        .otp-digit {
+            width: 48px; height: 56px; text-align: center; font-size: 1.3rem; font-weight: 800;
+            border: 1.5px solid var(--input-border); border-radius: 12px;
+            background: var(--input-bg); color: var(--text-main); outline: none; transition: all 0.2s;
+        }
+        .otp-digit:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79,70,229,0.15); }
+        .otp-digit.filled { border-color: var(--primary); background: rgba(79,70,229,0.1); }
+        .otp-timer { text-align: center; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem; }
+        .otp-timer .countdown { color: var(--accent); font-weight: 700; font-size: 1rem; }
+        .otp-timer.expired .countdown { color: var(--danger); }
+        .resend-btn {
+            display: none; width: 100%; padding: 0.7rem; border-radius: 10px;
+            border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05);
+            color: var(--accent); font-weight: 600; font-size: 0.85rem; cursor: pointer; margin-bottom: 1rem; transition: all 0.2s;
+        }
+        .resend-btn.show { display: block; animation: fadeIn 0.3s; }
+        .resend-btn:hover { border-color: var(--accent); background: rgba(6,182,212,0.1); }
+        .otp-hint { text-align: center; font-size: 0.78rem; color: var(--text-soft); margin-bottom: 1rem; padding: 0.6rem; background: rgba(6,182,212,0.08); border-radius: 10px; border: 1px solid rgba(6,182,212,0.15); }
+        .otp-hint code { color: var(--accent); font-weight: 700; font-size: 0.85rem; }
+
+        .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .toast {
+            position: fixed; top: 80px; right: 24px; z-index: 200;
+            display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+            background: var(--glass-card); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 14px;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.3); max-width: 340px;
+            animation: toastIn 0.4s cubic-bezier(0.16,1,0.3,1);
+        }
+        .toast.out { animation: toastOut 0.3s forwards; }
+        @keyframes toastIn { from { opacity:0; transform: translateX(120%); } to { opacity:1; transform: translateX(0); } }
+        @keyframes toastOut { to { opacity:0; transform: translateX(120%); } }
+        .toast .ico { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .toast .ico.success { background: rgba(22,163,74,0.2); color: #4ade80; }
+        .toast .ico.error { background: rgba(239,68,68,0.2); color: #fca5a5; }
+        .toast .ico.info { background: rgba(79,70,229,0.2); color: #c7d2fe; }
+        .toast .body .t { font-weight:700; font-size:0.85rem; }
+        .toast .body .s { font-size:0.75rem; color: var(--text-muted); margin-top:2px; }
+
+        .site-footer { background: rgba(0,0,0,0.3); backdrop-filter: blur(10px); border-top: 1px solid var(--glass-border); padding: 18px 6%; text-align: center; font-size: 0.82rem; color: var(--text-muted); }
+
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
+            .auth-card { padding: 1.75rem 1.5rem; }
+            .otp-digit { width: 40px; height: 48px; font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="animated-bg"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <header class="navbar">
+        <a href="../index.html" class="navbar-brand">
+            <img src="../images/findit.jpeg" alt="FindIt" onerror="this.style.display='none'">
+            <span>FindIt</span>
+        </a>
+        <div class="nav-actions">
+            <a href="Login.html" class="btn-nav"><i class="fa-solid fa-arrow-right-to-bracket"></i> Log In</a>
+        </div>
+    </header>
+
+    <main class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="header-logo">
+                    <img src="../images/findit.jpeg" alt="FindIt" onerror="this.style.display='none'">
+                </div>
+                <h2>Join FindIt</h2>
+                <p>Create your campus lost &amp; found account</p>
+            </div>
+
+            <div id="authMessage" class="auth-message"></div>
+
+            <form id="registerForm" onsubmit="handleRegister(event)" autocomplete="off">
+                <div class="form-group">
+                    <label for="fullname">Full Name</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="fullname" placeholder="John Doe" required autocomplete="off">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="field-error" id="err-fullname">Name must be at least 3 characters</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="role">Role</label>
+                        <div class="input-wrapper">
+                            <select id="role" required>
+                                <option value="Student" selected>Student</option>
+                                <option value="Faculty">Faculty / Staff</option>
+                                <option value="Admin">Campus Admin</option>
+                                <option value="Security">Security Chief</option>
+                            </select>
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="dept">Department</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="dept" placeholder="CSE / Admin" required autocomplete="off">
+                            <i class="fa-solid fa-building-columns"></i>
+                        </div>
+                        <div class="field-error" id="err-dept">Department is required</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Campus Email (@gmail.com)</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="email" placeholder="yourname@gmail.com" required autocomplete="off" spellcheck="false">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                    <div class="field-error" id="err-email">Must be a valid @gmail.com address</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mobile">Mobile Number</label>
+                    <div class="input-wrapper">
+                        <input type="tel" id="mobile" placeholder="+91 9876543210" required autocomplete="off">
+                        <i class="fa-solid fa-mobile-screen"></i>
+                    </div>
+                    <div class="field-error" id="err-mobile">Enter a valid 10-digit mobile number</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Create Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" placeholder="Min 6 chars, 1 uppercase, 1 special" required autocomplete="new-password" style="padding-right: 2.75rem;">
+                        <i class="fa-solid fa-lock"></i>
+                        <i class="fa-solid fa-eye toggle-password" id="togglePass" onclick="togglePassword('password','togglePass')"></i>
+                    </div>
+                    <div class="strength-bar" id="strengthBar"><div class="strength-segment"></div><div class="strength-segment"></div><div class="strength-segment"></div><div class="strength-segment"></div></div>
+                    <div class="strength-label" id="strengthLabel"></div>
+                    <div class="field-error" id="err-password">6-20 chars, 1 uppercase, 1 special character</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="confirmPassword" placeholder="Re-enter password" required autocomplete="new-password" style="padding-right: 2.75rem;">
+                        <i class="fa-solid fa-lock"></i>
+                        <i class="fa-solid fa-eye toggle-password" id="toggleConfirm" onclick="togglePassword('confirmPassword','toggleConfirm')"></i>
+                    </div>
+                    <div class="field-error" id="err-confirm">Passwords do not match</div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btnRegister">
+                    <i class="fa-solid fa-user-plus"></i> Create Account
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                Already have an account? <a href="Login.html">Log In</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- OTP Modal -->
+    <div class="modal-overlay" id="otpModal">
+        <div class="modal-card">
+            <div class="modal-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="modal-title">Verify Your Email</div>
+            <div class="modal-sub">Enter the 6-digit code sent to your email</div>
+            <div class="otp-hint" id="otpHint">An OTP has been sent to your email.</div>
+            <div class="otp-input-group" id="otpInputs">
+                <input type="text" class="otp-digit" maxlength="1" autocomplete="one-time-code" data-index="0">
+                <input type="text" class="otp-digit" maxlength="1" autocomplete="off" data-index="1">
+                <input type="text" class="otp-digit" maxlength="1" autocomplete="off" data-index="2">
+                <input type="text" class="otp-digit" maxlength="1" autocomplete="off" data-index="3">
+                <input type="text" class="otp-digit" maxlength="1" autocomplete="off" data-index="4">
+                <input type="text" class="otp-digit" maxlength="1" autocomplete="off" data-index="5">
+            </div>
+            <div class="otp-timer" id="otpTimer">OTP expires in <span class="countdown" id="countdown">60</span>s</div>
+            <button class="resend-btn" id="resendBtn" onclick="resendOTP()"><i class="fa-solid fa-rotate-right"></i> Resend OTP</button>
+            <button class="btn-submit" onclick="verifyRegistrationOTP(event)"><i class="fa-solid fa-check"></i> Verify &amp; Complete</button>
+        </div>
+    </div>
+
+    <footer class="site-footer">&copy; 2026 FindIt Campus System. All rights reserved.</footer>
+
+    <script>
+    const savedTheme = localStorage.getItem('findit_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    function togglePassword(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+        if (input.type === 'password') { input.type = 'text'; icon.className = 'fa-solid fa-eye-slash toggle-password'; }
+        else { input.type = 'password'; icon.className = 'fa-solid fa-eye toggle-password'; }
+    }
+
+    function showMessage(type, text) {
+        const msg = document.getElementById('authMessage');
+        msg.className = `auth-message ${type}`;
+        msg.textContent = text;
+    }
+    function hideMessage() { document.getElementById('authMessage').className = 'auth-message'; }
+
+    function showToast(type, title, sub) {
+        const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
+        const el = document.createElement('div');
+        el.className = 'toast';
+        el.innerHTML = `<div class="ico ${type}"><i class="fa-solid ${icons[type]}"></i></div><div class="body"><div class="t">${title}</div><div class="s">${sub}</div></div>`;
+        document.body.appendChild(el);
+        setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 300); }, 3500);
+    }
+
+    function setError(field, errId, hasError) {
+        const input = document.getElementById(field);
+        const err = document.getElementById(errId);
+        if (hasError) { input.classList.add('invalid'); err.classList.add('show'); }
+        else { input.classList.remove('invalid'); err.classList.remove('show'); }
+    }
+
+    /* Real-time validation */
+    document.getElementById('fullname').addEventListener('input', function() {
+        setError('fullname', 'err-fullname', this.value.trim().length < 3);
+    });
+    document.getElementById('email').addEventListener('input', function() {
+        const valid = /^[^\s@]+@gmail\.com$/.test(this.value.trim().toLowerCase());
+        setError('email', 'err-email', !valid && this.value.length > 0);
+    });
+    document.getElementById('mobile').addEventListener('input', function() {
+        const valid = /^[+]?[\d\s-]{10,15}$/.test(this.value.trim());
+        setError('mobile', 'err-mobile', !valid && this.value.length > 0);
+    });
+    document.getElementById('dept').addEventListener('input', function() {
+        setError('dept', 'err-dept', this.value.trim().length < 1);
+    });
+    document.getElementById('password').addEventListener('input', function() {
+        const val = this.value;
+        const valid = val.length >= 6 && val.length <= 20 && /[A-Z]/.test(val) && /[!@#$%^&*(),.?":{}|<>]/.test(val);
+        setError('password', 'err-password', !valid && val.length > 0);
+        // Strength
+        let score = 0;
+        if (val.length >= 6) score++;
+        if (val.length >= 10) score++;
+        if (/[A-Z]/.test(val)) score++;
+        if (/[!@#$%^&*(),.?":{}|<>]/.test(val)) score++;
+        const segments = document.querySelectorAll('#strengthBar .strength-segment');
+        segments.forEach((s, i) => {
+            s.className = 'strength-segment';
+            if (i < score) {
+                if (score <= 1) s.classList.add('weak');
+                else if (score <= 2) s.classList.add('medium');
+                else s.classList.add('strong');
+            }
+        });
+        const labels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
+        const colors = ['var(--danger)', 'var(--danger)', 'var(--warning)', 'var(--accent)', 'var(--success)'];
+        const lbl = document.getElementById('strengthLabel');
+        lbl.textContent = val.length > 0 ? labels[score] : '';
+        lbl.style.color = val.length > 0 ? colors[score] : 'transparent';
+    });
+    document.getElementById('confirmPassword').addEventListener('input', function() {
+        const match = this.value === document.getElementById('password').value;
+        setError('confirmPassword', 'err-confirm', !match && this.value.length > 0);
+    });
+
+    /* Registration */
+    let pendingUser = null;
+    let generatedOTP = '';
+    let otpTimerInterval = null;
+    let otpExpiry = 0;
+
+    function handleRegister(e) {
+        e.preventDefault();
+        const fullname = document.getElementById('fullname').value.trim();
+        const role = document.getElementById('role').value;
+        const dept = document.getElementById('dept').value.trim();
+        const email = document.getElementById('email').value.trim().toLowerCase();
+        const mobile = document.getElementById('mobile').value.trim();
+        const password = document.getElementById('password').value;
+        const confirm = document.getElementById('confirmPassword').value;
+
+        // Full validation
+        let valid = true;
+        if (fullname.length < 3) { setError('fullname', 'err-fullname', true); valid = false; }
+        if (!/^[^\s@]+@gmail\.com$/.test(email)) { setError('email', 'err-email', true); valid = false; }
+        if (!/^[+]?[\d\s-]{10,15}$/.test(mobile)) { setError('mobile', 'err-mobile', true); valid = false; }
+        if (dept.length < 1) { setError('dept', 'err-dept', true); valid = false; }
+        if (!(password.length >= 6 && password.length <= 20 && /[A-Z]/.test(password) && /[!@#$%^&*(),.?":{}|<>]/.test(password))) { setError('password', 'err-password', true); valid = false; }
+        if (password !== confirm) { setError('confirmPassword', 'err-confirm', true); valid = false; }
+
+        if (!valid) { showMessage('error', 'Please fix the errors before continuing.'); return; }
+
+        const users = JSON.parse(localStorage.getItem('findit_users') || '[]');
+        if (users.some(u => u.email.toLowerCase() === email)) {
+            showMessage('error', 'Account with this email already exists.');
+            return;
+        }
+
+        pendingUser = { fullname, role, dept, email, mobile, password };
+        generatedOTP = String(Math.floor(100000 + Math.random() * 900000));
+        otpExpiry = Date.now() + 60000;
+
+        document.getElementById('otpModal').classList.add('show');
+        document.getElementById('otpHint').innerHTML = `OTP sent to <strong>${email}</strong>. For demo, your code is: <code>${generatedOTP}</code>`;
+        showMessage('info', 'OTP sent! Please verify your email to complete registration.');
+        startOTPTimer();
+        document.querySelector('#otpInputs .otp-digit[data-index="0"]').focus();
+    }
+
+    function startOTPTimer() {
+        clearInterval(otpTimerInterval);
+        const timerEl = document.getElementById('otpTimer');
+        const countdownEl = document.getElementById('countdown');
+        const resendBtn = document.getElementById('resendBtn');
+        timerEl.classList.remove('expired');
+        resendBtn.classList.remove('show');
+        timerEl.innerHTML = 'OTP expires in <span class="countdown" id="countdown">60</span>s';
+
+        otpTimerInterval = setInterval(() => {
+            const remaining = Math.ceil((otpExpiry - Date.now()) / 1000);
+            const cd = document.getElementById('countdown');
+            if (remaining <= 0) {
+                clearInterval(otpTimerInterval);
+                if (cd) cd.textContent = '0';
+                timerEl.classList.add('expired');
+                timerEl.innerHTML = '<span style="color:var(--danger);">OTP expired. Please resend.</span>';
+                resendBtn.classList.add('show');
+                generatedOTP = '';
+            } else {
+                if (cd) cd.textContent = remaining;
+            }
+        }, 1000);
+    }
+
+    function resendOTP() {
+        generatedOTP = String(Math.floor(100000 + Math.random() * 900000));
+        otpExpiry = Date.now() + 60000;
+        document.getElementById('otpHint').innerHTML = `New OTP sent to <strong>${pendingUser.email}</strong>. For demo, your code is: <code>${generatedOTP}</code>`;
+        startOTPTimer();
+        showToast('info', 'OTP Resent', 'A new code has been sent to your email.');
+        document.querySelectorAll('#otpInputs .otp-digit').forEach(d => { d.value = ''; d.classList.remove('filled'); });
+        document.querySelector('#otpInputs .otp-digit[data-index="0"]').focus();
+    }
+
+    function verifyRegistrationOTP(e) {
+        e.preventDefault();
+        const entered = Array.from(document.querySelectorAll('#otpInputs .otp-digit')).map(d => d.value).join('');
+        if (!generatedOTP) { showToast('error', 'OTP Expired', 'Please resend the OTP.'); return; }
+        if (entered.length < 6) { showToast('error', 'Incomplete', 'Please enter all 6 digits.'); return; }
+        if (entered !== generatedOTP) {
+            showToast('error', 'Wrong OTP', 'Please try again.');
+            document.querySelectorAll('#otpInputs .otp-digit').forEach(d => { d.style.borderColor = 'var(--danger)'; setTimeout(() => d.style.borderColor = '', 1000); });
+            return;
+        }
+
+        // Complete registration
+        const users = JSON.parse(localStorage.getItem('findit_users') || '[]');
+        users.push(pendingUser);
+        localStorage.setItem('findit_users', JSON.stringify(users));
+        localStorage.setItem('findit_logged_user', JSON.stringify({
+            fullname: pendingUser.fullname, role: pendingUser.role, dept: pendingUser.dept, email: pendingUser.email
+        }));
+
+        document.getElementById('otpModal').classList.remove('show');
+        showToast('success', 'Registration Successful', 'Welcome to FindIt, ' + pendingUser.fullname + '!');
+        setTimeout(() => window.location.href = '../index.html', 1000);
+    }
+
+    /* OTP input behavior */
+    document.querySelectorAll('#otpInputs .otp-digit').forEach((input, idx, arr) => {
+        input.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value) { this.classList.add('filled'); if (idx < arr.length - 1) arr[idx + 1].focus(); }
+            else { this.classList.remove('filled'); }
+        });
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && !this.value && idx > 0) arr[idx - 1].focus();
+        });
+        input.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const data = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, 6);
+            data.split('').forEach((char, i) => { if (arr[i]) { arr[i].value = char; arr[i].classList.add('filled'); } });
+            if (data.length === 6) arr[5].focus();
+        });
+    });
+    </script>
+</body>
+</html>

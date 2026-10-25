@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FindIt — Smart Search</title>
+
+<link rel="icon" href="../images/findit.jpeg">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+rel="stylesheet">
+
+<style>
+
+:root{
+  --primary:#4f46e5;
+  --primaryHover:#4338ca;
+  --success:#16a34a;
+  --danger:#ef4444;
+  --accent:#06b6d4;
+  --bg:#f6f7fb;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:#64748b;
+  --border:#e2e8f0;
+  --shadow:
+  0 2px 8px rgba(0,0,0,.05),
+  0 12px 28px rgba(0,0,0,.06);
+}
+
+[data-theme="dark"]{
+  --bg:#0b1220;
+  --card:#121b2d;
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --border:#243049;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Inter",sans-serif;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  transition:.35s;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background-image:
+  radial-gradient(circle,var(--border) 1px,transparent 1px);
+  background-size:28px 28px;
+  opacity:.35;
+  z-index:-1;
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+/* NAVBAR */
+.navbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 6%;
+  background:var(--card);
+  border-bottom:1px solid var(--border);
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:22px;
+  font-weight:800;
+  color:var(--primary);
+}
+
+.logo img{
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  object-fit:contain;
+  background:#fff;
+  padding:3px;
+}
+
+.nav-actions{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+.btn{
+  padding:10px 18px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:transparent;
+  cursor:pointer;
+  font-weight:600;
+  transition:.25s;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:var(--text);
+}
+
+.btn:hover{
+  border-color:var(--primary);
+  color:var(--primary);
+}
+
+.theme-btn{
+  width:42px;
+  height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:12px;
+  cursor:pointer;
+}
+
+/* HERO */
+.hero{
+  max-width:1100px;
+  width:92%;
+  margin:50px auto 20px;
+  text-align:center;
+}
+
+.hero h1{
+  font-size:48px;
+  font-weight:900;
+  margin-bottom:10px;
+}
+
+.hero h1 span{
+  background:linear-gradient(120deg,var(--primary),var(--accent));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.hero p{
+  font-size:17px;
+  color:var(--muted);
+  margin-bottom:35px;
+}
+
+/* SEARCH BAR */
+.searchBox{
+  display:flex;
+  gap:15px;
+  justify-content:center;
+  align-items:center;
+  max-width:720px;
+  margin:auto;
+}
+
+.searchInput{
+  position:relative;
+  flex:1;
+}
+
+.searchInput i{
+  position:absolute;
+  left:18px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--muted);
+}
+
+.searchInput input{
+  width:100%;
+  padding:15px 18px 15px 48px;
+  border-radius:15px;
+  border:1.5px solid var(--border);
+  background:var(--card);
+  color:var(--text);
+  outline:none;
+  font-size:16px;
+}
+
+.searchInput input:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 4px rgba(79,70,229,.12);
+}
+
+.searchButton{
+  padding:15px 26px;
+  border:none;
+  border-radius:15px;
+  background:var(--primary);
+  color:white;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.3s;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.searchButton:hover{
+  background:var(--primaryHover);
+  transform:translateY(-2px);
+}
+
+/* QUICK TAGS */
+.tags{
+  margin-top:30px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+}
+
+.tag{
+  padding:9px 16px;
+  border-radius:999px;
+  background:var(--card);
+  border:1px solid var(--border);
+  cursor:pointer;
+  font-size:14px;
+  font-weight:600;
+  transition:.25s;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:var(--text);
+}
+
+.tag:hover{
+  color:var(--primary);
+  border-color:var(--primary);
+  transform:translateY(-2px);
+}
+
+/* RESULTS */
+.results{
+  max-width:1200px;
+  width:92%;
+  margin:40px auto;
+}
+
+.resultsHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.resultsHeader h2{
+  font-size:26px;
+  font-weight:800;
+}
+
+.resultsHeader p{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  gap:22px;
+}
+
+.empty{
+  padding:90px 20px;
+  text-align:center;
+  grid-column:1/-1;
+  color:var(--muted);
+}
+
+.empty i{
+  font-size:65px;
+  margin-bottom:15px;
+  color:var(--primary);
+}
+
+/* FOOTER */
+footer{
+  margin-top:auto;
+  background:#0b1220;
+  color:#94a3b8;
+  padding:18px;
+  text-align:center;
+  font-size:14px;
+}
+
+@media(max-width:700px){
+  .hero h1{
+    font-size:34px;
+  }
+  .searchBox{
+    flex-direction:column;
+  }
+  .searchButton{
+    width:100%;
+    justify-content:center;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+  <a href="../index.html" class="logo">
+    <img src="../images/findit.jpeg" alt="FindIt Logo" onerror="this.style.display='none'">
+    <span>FindIt</span>
+  </a>
+
+  <div class="nav-actions">
+    <button class="btn theme-btn" onclick="toggleTheme()" aria-label="Toggle Theme">
+      <i id="themeIcon" class="fa-solid fa-moon"></i>
+    </button>
+    <a href="../index.html" class="btn">
+      <i class="fa-solid fa-house"></i>
+      Home
+    </a>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Smart <span>Search</span></h1>
+  <p>Search all lost and found items instantly using our smart matching engine.</p>
+
+  <div class="searchBox">
+    <div class="searchInput">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input id="searchInput" type="text" placeholder="Search Laptop, Wallet, Bottle, Phone..." onkeydown="handleKeyPress(event)">
+    </div>
+    <button class="searchButton" onclick="performSearch()">
+      <i class="fa-solid fa-bolt"></i>
+      Search
+    </button>
+  </div>
+
+  <div class="tags">
+    <button class="tag" onclick="quickSearch('Laptop')"><i class="fa-solid fa-laptop"></i>Laptop</button>
+    <button class="tag" onclick="quickSearch('Wallet')"><i class="fa-solid fa-wallet"></i>Wallet</button>
+    <button class="tag" onclick="quickSearch('ID')"><i class="fa-solid fa-id-card"></i>ID Card</button>
+    <button class="tag" onclick="quickSearch('Bottle')"><i class="fa-solid fa-bottle-water"></i>Bottle</button>
+    <button class="tag" onclick="quickSearch('Phone')"><i class="fa-solid fa-mobile-screen"></i>Phone</button>
+    <button class="tag" onclick="quickSearch('Keys')"><i class="fa-solid fa-key"></i>Keys</button>
+    <button class="tag" onclick="quickSearch('Bag')"><i class="fa-solid fa-bag-shopping"></i>Bag</button>
+  </div>
+</section>
+
+<section class="results">
+  <div class="resultsHeader">
+    <div>
+      <h2 id="resultTitle">Search Results</h2>
+      <p id="resultCount">Search to view matching items</p>
+    </div>
+  </div>
+
+  <div class="cards" id="resultsGrid">
+    <div class="empty">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <h3>No Results Yet</h3>
+      <p>Search for any item above.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 FindIt Campus Lost & Found System
+</footer>
+
+<script>
+//========================================
+// THEME SWITCHER
+//========================================
+const savedTheme = localStorage.getItem("findit_theme") || "light";
+document.documentElement.setAttribute("data-theme", savedTheme);
+document.getElementById("themeIcon").className = savedTheme === "dark" ? "fa-solid fa-sun" : "fa-solid fa-moon";
+
+function toggleTheme(){
+  const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  localStorage.setItem("findit_theme", next);
+  document.getElementById("themeIcon").className = next === "dark" ? "fa-solid fa-sun" : "fa-solid fa-moon";
+}
+
+//========================================
+// DEFAULT MOCK ITEMS (From Index Page)
+//========================================
+const defaultCampusItems = [
+  {
+    id: "item-1",
+    itemName: "AirPods Pro Case",
+    category: "Electronics",
+    location: "Student Union",
+    type: "Found",
+    description: "White charging case found on a table."
+  },
+  {
+    id: "item-2",
+    itemName: "Leather Wallet",
+    category: "Wallets & Cards",
+    location: "Science Building",
+    type: "Lost",
+    description: "Brown leather wallet with student IDs inside."
+  },
+  {
+    id: "item-3",
+    itemName: "Hydro Flask Water Bottle",
+    category: "Personal Belongings",
+    location: "Main Gym",
+    type: "Recovered",
+    description: "Olive green water bottle with stickers."
+  },
+  {
+    id: "item-4",
+    itemName: "TI-84 Calculator",
+    category: "Electronics",
+    location: "Math Block 302",
+    type: "Lost",
+    description: "Texas Instruments scientific calculator."
+  },
+  {
+    id: "item-5",
+    itemName: "Prescription Glasses",
+    category: "Personal Belongings",
+    location: "Campus Library",
+    type: "Found",
+    description: "Black frame reading glasses."
+  },
+  {
+    id: "item-6",
+    itemName: "Student ID Card",
+    category: "Wallets & Cards",
+    location: "Cafeteria",
+    type: "Recovered",
+    description: "Campus ID card found near register."
+  }
+];
+
+//========================================
+// UNIFIED DATA FETCHING & SEEDING
+//========================================
+function getAllReports() {
+  const possibleKeys = [
+    "findit_all_reports",
+    "findit_reports",
+    "findit_lost_items",
+    "findit_found_items",
+    "lostItems",
+    "foundItems",
+    "reports"
+  ];
+
+  let combined = [];
+  const seenIds = new Set();
+
+  // 1. Fetch user-added reports
+  possibleKeys.forEach(key => {
+    try {
+      const data = JSON.parse(localStorage.getItem(key) || "[]");
+      if (Array.isArray(data)) {
+        data.forEach(item => {
+          const uniqueId = item.id || `${item.itemName}-${item.location}-${item.type}`;
+          if (!seenIds.has(uniqueId)) {
+            seenIds.add(uniqueId);
+            combined.push(item);
+          }
+        });
+      }
+    } catch(e) {}
+  });
+
+  // 2. Include default mock items if missing
+  defaultCampusItems.forEach(mockItem => {
+    if (!seenIds.has(mockItem.id)) {
+      seenIds.add(mockItem.id);
+      combined.push(mockItem);
+    }
+  });
+
+  // Sync back to primary storage so all pages stay updated
+  localStorage.setItem("findit_all_reports", JSON.stringify(combined));
+
+  return combined;
+}
+
+//========================================
+// SMART CATEGORY & ICON MAPPER
+//========================================
+const categoryIcons = {
+  // Laptops / Computers
+  laptop: "fa-laptop",
+  latop: "fa-laptop",
+  notebook: "fa-laptop",
+  hp: "fa-laptop",
+  dell: "fa-laptop",
+  macbook: "fa-laptop",
+  lenovo: "fa-laptop",
+
+  // Wallets & Cards
+  wallet: "fa-wallet",
+  purse: "fa-wallet",
+
+  "id card": "fa-id-card",
+  id: "fa-id-card",
+  badge: "fa-id-card",
+  license: "fa-id-card",
+  passport: "fa-id-card",
+  
+  // Drinkware
+  bottle: "fa-bottle-water",
+  flask: "fa-bottle-water",
+  hydro: "fa-bottle-water",
+  water: "fa-bottle-water",
+
+  // Phones & Audio
+  phone: "fa-mobile-screen",
+  mobile: "fa-mobile-screen",
+  airpods: "fa-headphones",
+  earbuds: "fa-headphones",
+  headphones: "fa-headphones",
+
+  // Other Gadgets & Personal Items
+  calculator: "fa-calculator",
+  glasses: "fa-glasses",
+  spectacles: "fa-glasses",
+  specs: "fa-glasses",
+  key: "fa-key",
+  keys: "fa-key",
+  bag: "fa-bag-shopping",
+  backpack: "fa-bag-shopping"
+};
+
+function getBestIcon(itemName, category) {
+  const text = `${itemName} ${category}`.toLowerCase();
+
+  for (let key in categoryIcons) {
+    if (text.includes(key)) {
+      return categoryIcons[key];
+    }
+  }
+
+  if (text.includes("electronic")) return "fa-laptop";
+  if (text.includes("personal")) return "fa-box-open";
+  return "fa-box";
+}
+
+//========================================
+// SEARCH LOGIC
+//========================================
+function handleKeyPress(e) {
+  if (e.key === "Enter") performSearch();
+}
+
+function quickSearch(text){
+  document.getElementById("searchInput").value = text;
+  performSearch();
+}
+
+function escapeHTML(str) {
+  return String(str || '').replace(/[&<>"']/g, function(m) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+  });
+}
+
+function showToast(type, title, msg){
+  const colors = { success:"var(--success)", error:"var(--danger)", info:"var(--primary)" };
+  const icons = { success:"fa-circle-check", error:"fa-circle-xmark", info:"fa-circle-info" };
+
+  const toast = document.createElement("div");
+  toast.style.cssText = `
+    position:fixed;
+    top:80px;
+    right:20px;
+    background:var(--card);
+    color:var(--text);
+    border:1px solid var(--border);
+    padding:15px 18px;
+    border-radius:14px;
+    box-shadow:var(--shadow);
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    z-index:9999;
+  `;
+
+  toast.innerHTML = `
+    <div style="font-size:22px;color:${colors[type]||colors.info}">
+      <i class="fa-solid ${icons[type]||icons.info}"></i>
+    </div>
+    <div>
+      <b>${escapeHTML(title)}</b><br>
+      <small style="color:var(--muted);">${escapeHTML(msg)}</small>
+    </div>
+  `;
+
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+function performSearch(){
+  const rawKeyword = document.getElementById("searchInput").value.trim().toLowerCase();
+
+  if(rawKeyword === ""){
+    showToast("info", "Empty Search", "Please enter an item name.");
+    return;
+  }
+
+  // Handle basic plural forms (e.g. "wallets" -> "wallet")
+  const keyword = rawKeyword.endsWith('s') && rawKeyword.length > 3 ? rawKeyword.slice(0, -1) : rawKeyword;
+
+  const reports = getAllReports();
+
+  const results = reports.filter(item => {
+    const name = (item.itemName || "").toLowerCase();
+    const cat = (item.category || "").toLowerCase();
+    const loc = (item.location || "").toLowerCase();
+    const desc = (item.description || "").toLowerCase();
+    const status = (item.type || item.status || "").toLowerCase();
+
+    return (
+      name.includes(keyword) || name.includes(rawKeyword) ||
+      cat.includes(keyword)  || cat.includes(rawKeyword)  ||
+      loc.includes(keyword)  || loc.includes(rawKeyword)  ||
+      desc.includes(keyword) || desc.includes(rawKeyword) ||
+      status.includes(keyword)
+    );
+  });
+
+  displayResults(results);
+}
+
+function displayResults(items){
+  document.getElementById("resultTitle").innerText = "Search Results";
+  document.getElementById("resultCount").innerText = `${items.length} Item(s) Found`;
+
+  const grid = document.getElementById("resultsGrid");
+
+  if(items.length === 0){
+    grid.innerHTML = `
+      <div class="empty">
+        <i class="fa-solid fa-box-open"></i>
+        <h3>No Matching Items</h3>
+        <p>No items found matching your query.</p>
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = "";
+
+  items.forEach(item => {
+    const icon = getBestIcon(item.itemName || "", item.category || "");
+
+    const image = item.imageURL && item.imageURL.trim() !== ""
+      ? `<img src="${escapeHTML(item.imageURL)}" style="width:100%;height:180px;object-fit:cover;">`
+      : `<div style="height:180px;display:flex;justify-content:center;align-items:center;font-size:70px;background:rgba(79,70,229,0.08);color:var(--primary);"><i class="fa-solid ${icon}"></i></div>`;
+
+    const card = document.createElement("div");
+    card.className = "resultCard";
+    card.style.cssText = `
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      transition:.3s;
+    `;
+
+    card.innerHTML = `
+      ${image}
+      <div style="padding:18px;">
+        <h3 style="margin-bottom:10px;">${escapeHTML(item.itemName || "Unnamed Item")}</h3>
+        <p style="margin-bottom:4px;font-size:14px;"><b>Category:</b> ${escapeHTML(item.category || "N/A")}</p>
+        <p style="margin-bottom:4px;font-size:14px;"><b>Location:</b> ${escapeHTML(item.location || "N/A")}</p>
+        <p style="margin-bottom:4px;font-size:14px;"><b>Status:</b> ${escapeHTML(item.type || item.status || "N/A")}</p>
+        <button style="margin-top:15px;width:100%;padding:12px;background:var(--primary);color:white;border:none;border-radius:12px;cursor:pointer;font-weight:700;" onclick="event.stopPropagation();selectItem('${escapeHTML(item.id || '')}')">View Match</button>
+      </div>
+    `;
+
+    grid.appendChild(card);
+  });
+}
+
+let selectedReport = null;
+
+function selectItem(id){
+  const reports = getAllReports();
+  selectedReport = reports.find(item => String(item.id) === String(id));
+
+  if (selectedReport) {
+    showToast("success", "Item Selected", selectedReport.itemName || "Item");
+    console.log("Selected Item:", selectedReport);
+  }
+}
+
+// Initial auto-seed on page load
+window.addEventListener("DOMContentLoaded", () => {
+  getAllReports();
+});
+</script>
+
+</body>
+</html>

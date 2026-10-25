@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindIt | Campus Lost & Found</title>
+    <link rel="icon" href="./images/findit.jpeg">
+
+    <link rel="icon" type="image/jpeg" href="images/findit.jpeg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           THEME TOKENS
+           ========================================================================== */
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-glow: rgba(79, 70, 229, 0.35);
+            --accent: #06b6d4;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-body: #f6f7fb;
+            --bg-nav: rgba(255, 255, 255, 0.72);
+            --bg-card: #ffffff;
+            --bg-elevated: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --text-soft: #94a3b8;
+            --border-color: #e2e8f0;
+            --border-soft: #eef2f7;
+            --footer-bg: #0a0f1e;
+            --footer-text: #94a3b8;
+            --card-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+            --card-hover-shadow: 0 4px 8px rgba(79, 70, 229, 0.08), 0 24px 48px rgba(79, 70, 229, 0.18);
+            --dot-color: rgba(79, 70, 229, 0.10);
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #0a0f1e;
+            --bg-nav: rgba(15, 23, 42, 0.72);
+            --bg-card: #131a2e;
+            --bg-elevated: #1a2238;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-soft: #64748b;
+            --border-color: #243049;
+            --border-soft: #1e293f;
+            --card-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.4);
+            --card-hover-shadow: 0 4px 8px rgba(79, 70, 229, 0.15), 0 24px 56px rgba(79, 70, 229, 0.28);
+            --dot-color: rgba(129, 140, 248, 0.14);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* Ambient Background */
+        .ambient-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background-image: radial-gradient(circle at center, var(--dot-color) 1px, transparent 1.5px);
+            background-size: 28px 28px;
+            pointer-events: none;
+        }
+        .ambient-glow {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background:
+                radial-gradient(600px circle at 12% 8%, rgba(79, 70, 229, 0.10), transparent 60%),
+                radial-gradient(700px circle at 88% 18%, rgba(6, 182, 212, 0.08), transparent 60%);
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 8%;
+            background-color: var(--bg-nav);
+            backdrop-filter: saturate(180%) blur(14px);
+            -webkit-backdrop-filter: saturate(180%) blur(14px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.02em;
+        }
+
+        .navbar-brand img {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            object-fit: contain;
+            background-color: #ffffff;
+            padding: 2px;
+            border: 1px solid var(--border-color);
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+        .navbar-nav a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.92rem;
+            transition: color 0.2s ease;
+        }
+        .navbar-nav a:hover { color: var(--primary); }
+
+        .nav-actions { display: flex; align-items: center; gap: 14px; }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+        .btn-outline {
+            border: 1px solid var(--border-color);
+            color: var(--primary);
+            background: transparent;
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            background-color: rgba(79, 70, 229, 0.08);
+            transform: translateY(-2px);
+        }
+        .btn-primary {
+            background-color: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 6px 16px var(--primary-glow);
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px var(--primary-glow);
+        }
+
+        .btn-theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: var(--text-main);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        /* Hero */
+        .hero {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            align-items: center;
+            gap: 60px;
+            padding: 70px 8% 50px;
+            max-width: 1320px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(79, 70, 229, 0.10);
+            color: var(--primary);
+            font-size: 0.78rem;
+            font-weight: 700;
+            margin-bottom: 22px;
+            border: 1px solid rgba(79, 70, 229, 0.18);
+        }
+
+        .hero-title {
+            font-size: clamp(2.4rem, 5vw, 3.6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            color: var(--text-main);
+        }
+        .hero-title .accent {
+            background: linear-gradient(120deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            margin: 22px 0 32px;
+            color: var(--text-muted);
+            font-size: 1.08rem;
+            line-height: 1.6;
+            max-width: 520px;
+        }
+
+        .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+
+        /* Dashboard Preview */
+        .dashboard-preview {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 22px;
+            padding: 18px;
+            box-shadow: var(--card-hover-shadow);
+        }
+        .dp-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .dp-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+        .dp-title .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+
+        .dp-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .dp-stat {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-soft);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+        .dp-stat .v {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+        }
+        .dp-stat .l {
+            font-size: 0.65rem;
+            color: var(--text-soft);
+            margin-top: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .dp-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+        .dp-feed-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-soft);
+            border-radius: 10px;
+            font-size: 0.82rem;
+        }
+        .dp-feed-item .ico {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .dp-feed-item .ico.lost { background: rgba(239, 68, 68, 0.12); color: var(--danger); }
+        .dp-feed-item .ico.found { background: rgba(22, 163, 74, 0.12); color: var(--success); }
+        .dp-feed-item .meta { flex: 1; min-width: 0; }
+        .dp-feed-item .meta .t {
+            font-weight: 600;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .dp-feed-item .meta .s { font-size: 0.7rem; color: var(--text-soft); }
+
+        /* Stats Bar */
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin: 20px 0 60px;
+            padding: 0 8%;
+            flex-wrap: wrap;
+        }
+        .stat-box {
+            text-align: center;
+            padding: 24px 32px;
+            border-radius: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            min-width: 200px;
+            box-shadow: var(--card-shadow);
+        }
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* Recent Items Grid */
+        .recent-section {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 0 8% 100px;
+            width: 100%;
+        }
+        .recent-header { text-align: center; margin-bottom: 32px; }
+        .recent-header h2 { font-size: 2.2rem; font-weight: 900; color: var(--text-main); }
+        .recent-header p { color: var(--text-muted); font-size: 1rem; }
+
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+        .filter-tab {
+            padding: 8px 18px;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .filter-tab.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 22px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 250px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover { transform: translateY(-6px); box-shadow: var(--card-hover-shadow); }
+
+        .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+        .card-icon {
+            width: 44px; height: 44px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; font-size: 1.15rem;
+        }
+        .card-icon.lost { background: rgba(239, 68, 68, 0.12); color: var(--danger); }
+        .card-icon.found { background: rgba(22, 163, 74, 0.12); color: var(--success); }
+
+        .badge {
+            font-size: 0.62rem; font-weight: 800; padding: 4px 10px; border-radius: 999px; text-transform: uppercase;
+        }
+        .badge-found { background-color: rgba(22, 163, 74, 0.14); color: var(--success); }
+        .badge-lost { background-color: rgba(239, 68, 68, 0.14); color: var(--danger); }
+        .badge-recovered { background-color: rgba(79, 70, 229, 0.14); color: var(--primary); }
+
+        .card-title { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+        .card-desc { font-size: 0.86rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 18px; }
+        .card-footer {
+            border-top: 1px solid var(--border-soft);
+            padding-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.76rem;
+            color: var(--text-soft);
+        }
+
+        /* Section Layouts */
+        .section-container { max-width: 1320px; margin: 0 auto; padding: 60px 8%; width: 100%; }
+        .section-header { text-align: center; margin-bottom: 40px; }
+        .section-header h2 { font-size: 2rem; font-weight: 800; color: var(--text-main); }
+        
+        .how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+        .how-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; }
+        .how-card h3 { font-size: 1.1rem; font-weight: 700; margin-top: 12px; margin-bottom: 8px; }
+
+        .faq-accordion { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; }
+        .faq-item { border-bottom: 1px solid var(--border-soft); padding: 14px 0; }
+        .faq-question { font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; }
+        .faq-answer { display: none; padding-top: 10px; color: var(--text-muted); font-size: 0.9rem; }
+        .faq-item.active .faq-answer { display: block; }
+
+        /* Footer */
+        .site-footer { background-color: var(--footer-bg); color: #fff; padding: 40px 8% 20px; margin-top: auto; }
+        .footer-bottom { text-align: center; font-size: 0.85rem; color: var(--footer-text); margin-top: 20px; }
+
+        @media (max-width: 960px) {
+            .hero { grid-template-columns: 1fr; }
+            .navbar-nav { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-bg"></div>
+    <div class="ambient-glow"></div>
+
+    <!-- ===================== NAVBAR ===================== -->
+    <header class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <img src="images/findit.jpeg" alt="FindIt Logo">
+            <span>FindIt</span>
+        </a>
+
+        <ul class="navbar-nav">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="pages/SmartSearch.html">Smart Search</a></li>
+            <li><a href="#recent">Recent Activity</a></li>
+            <li><a href="#how">How It Works</a></li>
+            <li><a href="#help">Help Center</a></li>
+            <li><a href="pages/Login.html">Login</a></li>
+            <li><a href="pages/Register.html">Register</a></li>
+        </ul>
+
+        <div class="nav-actions">
+            <button class="btn-theme-toggle" id="themeToggle" title="Toggle Theme">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+            <a href="pages/ReportLost.html" class="btn btn-outline"><i class="fa-solid fa-plus"></i> Report Item</a>
+        </div>
+    </header>
+
+    <!-- ===================== HERO SECTION ===================== -->
+    <section class="hero">
+        <div class="hero-left">
+            <div class="hero-eyebrow">
+                <span>Official Campus Lost & Found Platform</span>
+            </div>
+            <h1 class="hero-title">
+                Lost something on campus? <br>
+                <span class="accent">We'll help you find it.</span>
+            </h1>
+            <p class="hero-subtitle">
+                FindIt bridges the gap between misplaced belongings and their owners. Fast, secure, and dynamically synced with real student reports.
+            </p>
+            <div class="hero-btns">
+                <a href="pages/SmartSearch.html" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Search Items</a>
+                <a href="pages/ReportFound.html" class="btn btn-outline"><i class="fa-solid fa-bullhorn"></i> Report Lost/Found</a>
+            </div>
+        </div>
+
+        <div class="hero-right">
+            <div class="dashboard-preview">
+                <div class="dp-header">
+                    <div class="dp-title">
+                        <span class="live-dot"></span> Dynamic Campus Feed
+                    </div>
+                </div>
+
+                <!-- DYNAMIC HERO STATS -->
+                <div class="dp-stats">
+                    <div class="dp-stat">
+                        <div class="v" id="heroReturnRate">0%</div>
+                        <div class="l">Return Rate</div>
+                    </div>
+                    <div class="dp-stat">
+                        <div class="v" id="heroAvgSearch">0h</div>
+                        <div class="l">Avg Search</div>
+                    </div>
+                    <div class="dp-stat">
+                        <div class="v" id="heroRecovered">0</div>
+                        <div class="l">Recovered</div>
+                    </div>
+                </div>
+
+                <!-- DYNAMIC LIVE FEED -->
+                <div class="dp-feed" id="liveFeed"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== DYNAMIC STATS BAR ===================== -->
+    <div class="stats-container">
+        <div class="stat-box">
+            <div class="stat-value" id="statTotalItems">0</div>
+            <div class="stat-label">Total Reported</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="statLostCount">0</div>
+            <div class="stat-label">Currently Lost</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="statRecoveredCount">0</div>
+            <div class="stat-label">Items Recovered</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="statAvgSearchTime">0h</div>
+            <div class="stat-label">Avg Recovery Time</div>
+        </div>
+    </div>
+
+    <!-- ===================== RECENT ACTIVITY (DYNAMIC GRID) ===================== -->
+    <section class="recent-section" id="recent">
+        <div class="recent-header">
+            <h2>Recent Activity</h2>
+            <p>Live, user-reported items dynamically synchronized in real time.</p>
+        </div>
+
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="filterItems('all', this)">All Items (<span id="countAll">0</span>)</button>
+            <button class="filter-tab" onclick="filterItems('lost', this)">Lost (<span id="countLost">0</span>)</button>
+            <button class="filter-tab" onclick="filterItems('found', this)">Found (<span id="countFound">0</span>)</button>
+            <button class="filter-tab" onclick="filterItems('recovered', this)">Recovered (<span id="countRecovered">0</span>)</button>
+        </div>
+
+        <!-- Dynamic Container for Cards -->
+        <div class="cards-grid" id="cardsGrid"></div>
+    </section>
+
+    <!-- ===================== HOW IT WORKS ===================== -->
+    <section class="section-container" id="how">
+        <div class="section-header">
+            <h2>How It Works</h2>
+        </div>
+        <div class="how-grid">
+            <div class="how-card">
+                <i class="fa-solid fa-file-pen fa-2x" style="color:var(--primary);"></i>
+                <h3>1. Report</h3>
+                <p>Submit item details, category, and location via the form.</p>
+            </div>
+            <div class="how-card">
+                <i class="fa-solid fa-wand-magic-sparkles fa-2x" style="color:var(--primary);"></i>
+                <h3>2. Match</h3>
+                <p>Items are categorized and matched dynamically.</p>
+            </div>
+            <div class="how-card">
+                <i class="fa-solid fa-handshake fa-2x" style="color:var(--primary);"></i>
+                <h3>3. Handover</h3>
+                <p>Owners verify identity and collect items safely.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== HELP CENTER ===================== -->
+    <section class="section-container" id="help">
+        <div class="section-header">
+            <h2>Help Center</h2>
+        </div>
+        <div class="faq-accordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Where do I pick up dynamic found items?</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">Items are held safely at campus security or designated desks.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="site-footer">
+        <div class="footer-bottom">
+            &copy; 2026 FindIt Campus Lost & Found System. Fully Dynamic Data Enabled.
+        </div>
+    </footer>
+
+    <!-- ===================== DYNAMIC DATA JAVASCRIPT ===================== -->
+    <script>
+        /* ==========================================================================
+           1. INITIAL SEED DATA (Used only if localStorage has no reports yet)
+           ========================================================================== */
+        const initialSeedData = [
+            { id: "101", title: "AirPods Pro Case", category: "Electronics", status: "found", location: "Student Union", date: "2026-07-26T18:00:00", searchTimeHours: 1.5 },
+            { id: "102", title: "Leather Wallet", category: "Wallets & Cards", status: "lost", location: "Science Building", date: "2026-07-26T17:30:00", searchTimeHours: 0 },
+            { id: "103", title: "Hydro Flask Water Bottle", category: "Personal Belongings", status: "recovered", location: "Main Gym", date: "2026-07-25T12:00:00", searchTimeHours: 3.0 },
+            { id: "104", title: "TI-84 Calculator", category: "Electronics", status: "lost", location: "Math Block 302", date: "2026-07-24T10:15:00", searchTimeHours: 0 },
+            { id: "105", title: "Prescription Glasses", category: "Personal Belongings", status: "found", location: "Campus Library", date: "2026-07-24T09:00:00", searchTimeHours: 2.0 },
+            { id: "106", title: "Student ID Card", category: "Wallets & Cards", status: "recovered", location: "Cafeteria", date: "2026-07-23T14:20:00", searchTimeHours: 0.8 }
+        ];
+
+        // Retrieve items from LocalStorage or initialize
+        function getItemsFromStorage() {
+            let items = localStorage.getItem('findit_items');
+            if (!items) {
+                localStorage.setItem('findit_items', JSON.stringify(initialSeedData));
+                return initialSeedData;
+            }
+            return JSON.parse(items);
+        }
+
+        /* ==========================================================================
+           2. DYNAMIC ICON GENERATOR (Based on Item Category or Title)
+           ========================================================================== */
+        function getDynamicIcon(title, category) {
+            const text = (title + " " + category).toLowerCase();
+            if (text.includes("airpod") || text.includes("headphone") || text.includes("audio")) return "fa-headphones";
+            if (text.includes("phone") || text.includes("mobile")) return "fa-mobile-screen";
+            if (text.includes("laptop") || text.includes("macbook") || text.includes("charger")) return "fa-laptop";
+            if (text.includes("wallet") || text.includes("purse")) return "fa-wallet";
+            if (text.includes("card") || text.includes("id")) return "fa-id-card";
+            if (text.includes("key")) return "fa-key";
+            if (text.includes("bottle") || text.includes("flask")) return "fa-bottle-water";
+            if (text.includes("glass")) return "fa-glasses";
+            if (text.includes("calc") || text.includes("math")) return "fa-calculator";
+            if (text.includes("book") || text.includes("notebook")) return "fa-book";
+            if (text.includes("bag") || text.includes("backpack")) return "fa-bag-shopping";
+            return "fa-box-open"; // Default fallback icon
+        }
+
+        /* ==========================================================================
+           3. DYNAMIC STATS CALCULATOR
+           ========================================================================== */
+        function renderDynamicDashboard() {
+            const items = getItemsFromStorage();
+
+            const totalCount = items.length;
+            const lostItems = items.filter(i => i.status === 'lost');
+            const foundItems = items.filter(i => i.status === 'found');
+            const recoveredItems = items.filter(i => i.status === 'recovered');
+
+            // Calculate Return Rate: (Recovered / (Lost + Found + Recovered)) * 100
+            const returnRate = totalCount > 0 ? Math.round((recoveredItems.length / totalCount) * 100) : 0;
+
+            // Calculate Average Search Time for recovered/found items
+            const timedItems = items.filter(i => i.searchTimeHours && i.searchTimeHours > 0);
+            const avgSearchTimeHours = timedItems.length > 0 
+                ? (timedItems.reduce((acc, i) => acc + Number(i.searchTimeHours), 0) / timedItems.length).toFixed(1)
+                : "1.5";
+
+            // Update DOM Numbers Dynamically
+            document.getElementById('statTotalItems').innerText = totalCount;
+            document.getElementById('statLostCount').innerText = lostItems.length;
+            document.getElementById('statRecoveredCount').innerText = recoveredItems.length;
+            document.getElementById('statAvgSearchTime').innerText = avgSearchTimeHours + "h";
+
+            // Update Filter Tab Badge Counters
+            document.getElementById('countAll').innerText = totalCount;
+            document.getElementById('countLost').innerText = lostItems.length;
+            document.getElementById('countFound').innerText = foundItems.length;
+            document.getElementById('countRecovered').innerText = recoveredItems.length;
+
+            // Update Hero Floating Stats
+            document.getElementById('heroReturnRate').innerText = returnRate + "%";
+            document.getElementById('heroAvgSearch').innerText = "<" + avgSearchTimeHours + "h";
+            document.getElementById('heroRecovered').innerText = recoveredItems.length;
+
+            // Render Feed & Cards Grid
+            renderLiveFeed(items);
+            renderCardsGrid(items, 'all');
+        }
+
+        /* ==========================================================================
+           4. DYNAMIC FEED RENDERER
+           ========================================================================== */
+        function renderLiveFeed(items) {
+            const feedContainer = document.getElementById('liveFeed');
+            feedContainer.innerHTML = '';
+
+            // Display latest 3 items
+            const recent = [...items].reverse().slice(0, 3);
+            recent.forEach(item => {
+                const icon = getDynamicIcon(item.title, item.category);
+                const statusClass = item.status === 'lost' ? 'lost' : 'found';
+                
+                const feedHTML = `
+                    <div class="dp-feed-item">
+                        <div class="ico ${statusClass}"><i class="fa-solid ${icon}"></i></div>
+                        <div class="meta">
+                            <div class="t">${item.title}</div>
+                            <div class="s">${item.status.toUpperCase()} • ${item.location}</div>
+                        </div>
+                        <div class="time">${formatTimeAgo(item.date)}</div>
+                    </div>
+                `;
+                feedContainer.insertAdjacentHTML('beforeend', feedHTML);
+            });
+        }
+
+        /* ==========================================================================
+           5. DYNAMIC CARDS GRID RENDERER
+           ========================================================================== */
+        function renderCardsGrid(items, filterCategory) {
+            const gridContainer = document.getElementById('cardsGrid');
+            gridContainer.innerHTML = '';
+
+            const filtered = items.filter(item => filterCategory === 'all' || item.status === filterCategory);
+
+            if (filtered.length === 0) {
+                gridContainer.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 40px; color: var(--text-muted);">No reports found under this category.</div>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const icon = getDynamicIcon(item.title, item.category);
+                let badgeClass = "badge-lost";
+                if(item.status === 'found') badgeClass = "badge-found";
+                if(item.status === 'recovered') badgeClass = "badge-recovered";
+
+                const cardHTML = `
+                    <div class="card" data-type="${item.status}">
+                        <div class="card-top">
+                            <div class="card-icon ${item.status === 'lost' ? 'lost' : 'found'}">
+                                <i class="fa-solid ${icon}"></i>
+                            </div>
+                            <span class="badge ${badgeClass}">${item.status}</span>
+                        </div>
+                        <div>
+                            <h3 class="card-title">${item.title}</h3>
+                            <p class="card-desc">Category: ${item.category}. Reported on campus ground.</p>
+                        </div>
+                        <div class="card-footer">
+                            <span><i class="fa-solid fa-location-dot"></i> ${item.location}</span>
+                            <span><i class="fa-regular fa-clock"></i> ${formatTimeAgo(item.date)}</span>
+                        </div>
+                    </div>
+                `;
+                gridContainer.insertAdjacentHTML('beforeend', cardHTML);
+            });
+        }
+
+        /* Helper: Relative Time Formatter */
+        function formatTimeAgo(dateString) {
+            if(!dateString) return "Recently";
+            const diffMs = new Date() - new Date(dateString);
+            const diffMins = Math.floor(diffMs / (1000 * 60));
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffDays = Math.floor(diffHours / 24);
+
+            if (diffMins < 60) return `${diffMins <= 0 ? 1 : diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            return `${diffDays}d ago`;
+        }
+
+        /* Filtering Handler */
+        function filterItems(category, el) {
+            document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+            el.classList.add('active');
+            renderCardsGrid(getItemsFromStorage(), category);
+        }
+
+        /* Dark / Light Toggle */
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const target = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', target);
+            themeToggle.querySelector('i').className = target === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        });
+
+        /* Accordion Toggle */
+        function toggleFaq(el) {
+            el.parentElement.classList.toggle('active');
+        }
+
+        /* Initial Execution */
+        window.addEventListener('DOMContentLoaded', () => {
+            renderDynamicDashboard();
+        });
+    </script>
+</body>
+</html>
