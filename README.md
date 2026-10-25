@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-# FindIt
- 
+# FindIt 
 =======
 FindIt – Campus Lost and Found Management System
 
@@ -28,3 +26,7 @@ How to Run:
 npm install
 npm run dev
 >>>>>>> b866b4bfd80dd0b5ab217c0f44325ee70685477c
+=======
+# FindIt
+A modern React + Vite web application for managing campus lost and found items with secure authentication, dashboards, search, filtering, and item reporting.A modern React + Vite web application for managing campus lost and found items with secure authentication, dashboards, search, filtering, and item reporting.
+
