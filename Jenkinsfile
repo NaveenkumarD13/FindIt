@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -40,6 +41,22 @@ pipeline {
             }
         }
 
+        stage('Test Docker Hub Login') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-cred',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    bat '''
+                        @echo off
+                        echo %DOCKER_PASS% | "%DOCKER_EXE%" login -u %DOCKER_USER% --password-stdin
+                        if errorlevel 1 exit /b 1
+                    '''
+                }
+            }
+        }
+
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(
@@ -66,9 +83,7 @@ pipeline {
             steps {
                 bat '"%KUBECTL_EXE%" apply -f deployment.yaml'
                 bat '"%KUBECTL_EXE%" apply -f service.yaml'
-
                 bat '"%KUBECTL_EXE%" set image deployment/findit findit=%DOCKER_IMAGE%:build-%BUILD_NUMBER%'
-
                 bat '"%KUBECTL_EXE%" rollout status deployment/findit --timeout=180s'
                 bat '"%KUBECTL_EXE%" get pods -l app=findit'
                 bat '"%KUBECTL_EXE%" get service findit-service'
@@ -82,9 +97,6 @@ pipeline {
         }
         failure {
             echo 'FindIt pipeline failed. Check the first failed stage in the Jenkins console.'
-        }
-        always {
-            bat(returnStatus: true, script: '"%DOCKER_EXE%" logout')
         }
     }
 }
