@@ -48,12 +48,21 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
+                    echo "Docker Hub username received by Jenkins: ${DOCKER_USER}"
+
                     powershell '''
                         $ErrorActionPreference = "Stop"
-                        $env:DOCKER_PASS | & $env:DOCKER_EXE login --username $env:DOCKER_USER --password-stdin
+
+                        $env:DOCKER_PASS |
+                            & $env:DOCKER_EXE login `
+                                --username $env:DOCKER_USER `
+                                --password-stdin
+
                         if ($LASTEXITCODE -ne 0) {
                             exit $LASTEXITCODE
                         }
+
+                        Write-Output "Docker Hub login successful."
                     '''
                 }
             }
@@ -66,10 +75,16 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
+                    echo "Docker Hub username received by Jenkins: ${DOCKER_USER}"
+
                     powershell '''
                         $ErrorActionPreference = "Stop"
 
-                        $env:DOCKER_PASS | & $env:DOCKER_EXE login --username $env:DOCKER_USER --password-stdin
+                        $env:DOCKER_PASS |
+                            & $env:DOCKER_EXE login `
+                                --username $env:DOCKER_USER `
+                                --password-stdin
+
                         if ($LASTEXITCODE -ne 0) {
                             exit $LASTEXITCODE
                         }
