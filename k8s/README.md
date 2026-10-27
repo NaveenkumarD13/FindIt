@@ -58,11 +58,9 @@ kubectl -n <your-namespace> get svc findit-frontend
 If your image is private, create an image pull secret and attach it to the deployment:
 
 ```bash
-kubectl -n <your-namespace> create secret docker-registry regcred \
-  --docker-server=<registry> \
-  --docker-username=<username> \
-  --docker-****** \
-  --docker-email=<email>
+kubectl -n <your-namespace> create secret generic regcred \
+  --type=kubernetes.io/dockerconfigjson \
+  --from-file=.dockerconfigjson=<path-to-docker-config-json>
 ```
 
 Then add to `k8s/deployment.yaml` under `spec.template.spec`:
