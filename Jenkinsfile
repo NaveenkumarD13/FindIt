@@ -44,7 +44,7 @@ pipeline {
         stage('Test Docker Hub Login') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-cred-new',
+                    credentialsId: 'dockerhub-cred',
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
@@ -62,7 +62,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-cred-new',
+                    credentialsId: 'dockerhub-cred',
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
