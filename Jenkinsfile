@@ -9,7 +9,7 @@ pipeline {
         DOCKER_IMAGE = 'naveenkumar31/findit'
         DOCKER_EXE = 'C:\\Users\\VIGNESH\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe'
         KUBECTL_EXE = 'C:\\Users\\VIGNESH\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\kubectl.exe'
-        KUBECONFIG = 'C:\\Users\\NAVEEN\\.kube\\config'
+        KUBECONFIG = 'C:\\Users\\VIGNESH\\.kube\\config'
     }
 
     stages {
