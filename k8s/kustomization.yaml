@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: findit
+
+resources:
+  - deployment.yaml
+  - service.yaml
+
+images:
+  - name: findit/frontend
+    newName: your-registry/findit-frontend
+    newTag: latest
