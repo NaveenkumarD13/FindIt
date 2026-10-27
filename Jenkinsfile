@@ -53,6 +53,13 @@ pipeline {
                     powershell '''
                         $ErrorActionPreference = "Stop"
 
+                        if ([string]::IsNullOrWhiteSpace($env:DOCKER_PASS)) {
+                            Write-Error "Docker Hub token is empty."
+                            exit 1
+                        }
+
+                        Write-Output "Docker token is present; its value will not be displayed."
+
                         $env:DOCKER_PASS |
                             & $env:DOCKER_EXE login `
                                 --username $env:DOCKER_USER `
@@ -79,6 +86,11 @@ pipeline {
 
                     powershell '''
                         $ErrorActionPreference = "Stop"
+
+                        if ([string]::IsNullOrWhiteSpace($env:DOCKER_PASS)) {
+                            Write-Error "Docker Hub token is empty."
+                            exit 1
+                        }
 
                         $env:DOCKER_PASS |
                             & $env:DOCKER_EXE login `
