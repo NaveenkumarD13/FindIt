@@ -44,14 +44,16 @@ pipeline {
         stage('Test Docker Hub Login') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-cred',
+                    credentialsId: 'dockerhub-cred-new',
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-                    bat '''
-                        @echo off
-                        echo %DOCKER_PASS% | "%DOCKER_EXE%" login -u %DOCKER_USER% --password-stdin
-                        if errorlevel 1 exit /b 1
+                    powershell '''
+                        $ErrorActionPreference = "Stop"
+                        $env:DOCKER_PASS | & $env:DOCKER_EXE login --username $env:DOCKER_USER --password-stdin
+                        if ($LASTEXITCODE -ne 0) {
+                            exit $LASTEXITCODE
+                        }
                     '''
                 }
             }
@@ -60,20 +62,27 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-cred',
+                    credentialsId: 'dockerhub-cred-new',
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-                    bat '''
-                        @echo off
-                        echo %DOCKER_PASS% | "%DOCKER_EXE%" login -u %DOCKER_USER% --password-stdin
-                        if errorlevel 1 exit /b 1
+                    powershell '''
+                        $ErrorActionPreference = "Stop"
 
-                        "%DOCKER_EXE%" push %DOCKER_IMAGE%:build-%BUILD_NUMBER%
-                        if errorlevel 1 exit /b 1
+                        $env:DOCKER_PASS | & $env:DOCKER_EXE login --username $env:DOCKER_USER --password-stdin
+                        if ($LASTEXITCODE -ne 0) {
+                            exit $LASTEXITCODE
+                        }
 
-                        "%DOCKER_EXE%" push %DOCKER_IMAGE%:1.0
-                        if errorlevel 1 exit /b 1
+                        & $env:DOCKER_EXE push "${env:DOCKER_IMAGE}:build-${env:BUILD_NUMBER}"
+                        if ($LASTEXITCODE -ne 0) {
+                            exit $LASTEXITCODE
+                        }
+
+                        & $env:DOCKER_EXE push "${env:DOCKER_IMAGE}:1.0"
+                        if ($LASTEXITCODE -ne 0) {
+                            exit $LASTEXITCODE
+                        }
                     '''
                 }
             }
@@ -83,8 +92,11 @@ pipeline {
             steps {
                 bat '"%KUBECTL_EXE%" apply -f deployment.yaml'
                 bat '"%KUBECTL_EXE%" apply -f service.yaml'
+
                 bat '"%KUBECTL_EXE%" set image deployment/findit findit=%DOCKER_IMAGE%:build-%BUILD_NUMBER%'
+
                 bat '"%KUBECTL_EXE%" rollout status deployment/findit --timeout=180s'
+
                 bat '"%KUBECTL_EXE%" get pods -l app=findit'
                 bat '"%KUBECTL_EXE%" get service findit-service'
             }
@@ -95,6 +107,7 @@ pipeline {
         success {
             echo 'FindIt CI/CD completed: image pushed and Kubernetes deployment verified.'
         }
+
         failure {
             echo 'FindIt pipeline failed. Check the first failed stage in the Jenkins console.'
         }
