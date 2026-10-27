@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: findit-frontend
+  labels:
+    app.kubernetes.io/name: findit
+    app.kubernetes.io/component: frontend
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+    - host: findit.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: findit-frontend
+                port:
+                  number: 80
