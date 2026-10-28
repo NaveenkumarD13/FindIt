@@ -75,17 +75,13 @@ pipeline {
                         }
 
                         Write-Output "Docker Hub username: $env:DOCKER_USER"
-                        Write-Output "Docker Hub token is available."
-                        Write-Output "Logging in to Docker Hub..."
+                        Write-Output "Logging in to Docker Hub directly..."
 
-                        # Create an isolated temporary docker config folder to avoid Windows credential helper conflicts
+                        # Use isolated config folder and pass credentials via arguments
                         $tempConfig = "$env:WORKSPACE\\.docker"
                         if (!(Test-Path $tempConfig)) { New-Item -ItemType Directory -Force -Path $tempConfig | Out-Null }
 
-                        $env:DOCKER_PASS |
-                            & $docker --config $tempConfig login `
-                                --username $env:DOCKER_USER `
-                                --password-stdin
+                        & $docker --config $tempConfig login --username "$env:DOCKER_USER" --password "$env:DOCKER_PASS"
 
                         if ($LASTEXITCODE -ne 0) {
                             throw "Docker Hub login failed. Verify the Jenkins credential."
@@ -97,7 +93,6 @@ pipeline {
                         $stableTag = "$($env:DOCKER_IMAGE):1.0"
 
                         Write-Output "Pushing build image..."
-
                         & $docker --config $tempConfig push $buildTag
 
                         if ($LASTEXITCODE -ne 0) {
@@ -105,7 +100,6 @@ pipeline {
                         }
 
                         Write-Output "Pushing version 1.0..."
-
                         & $docker --config $tempConfig push $stableTag
 
                         if ($LASTEXITCODE -ne 0) {
