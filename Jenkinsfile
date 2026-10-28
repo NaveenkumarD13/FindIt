@@ -78,8 +78,12 @@ pipeline {
                         Write-Output "Docker Hub token is available."
                         Write-Output "Logging in to Docker Hub..."
 
+                        # Create an isolated temporary docker config folder to avoid Windows credential helper conflicts
+                        $tempConfig = "$env:WORKSPACE\\.docker"
+                        if (!(Test-Path $tempConfig)) { New-Item -ItemType Directory -Force -Path $tempConfig | Out-Null }
+
                         $env:DOCKER_PASS |
-                            & $docker login `
+                            & $docker --config $tempConfig login `
                                 --username $env:DOCKER_USER `
                                 --password-stdin
 
@@ -94,7 +98,7 @@ pipeline {
 
                         Write-Output "Pushing build image..."
 
-                        & $docker push $buildTag
+                        & $docker --config $tempConfig push $buildTag
 
                         if ($LASTEXITCODE -ne 0) {
                             throw "Failed to push the build image."
@@ -102,7 +106,7 @@ pipeline {
 
                         Write-Output "Pushing version 1.0..."
 
-                        & $docker push $stableTag
+                        & $docker --config $tempConfig push $stableTag
 
                         if ($LASTEXITCODE -ne 0) {
                             throw "Failed to push image version 1.0."
